@@ -2,282 +2,403 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Project 84</title>
+<meta name="theme-color" content="#16407a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Baisakh">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Road to Baisakh</title>
 <style>
-/* Palette: blues after Sanzo Wada's "A Dictionary of Color Combinations".
-   60% mist ground · 30% indigo ink · 10% cerulean accent. */
+/* Blues after Sanzo Wada's "A Dictionary of Color Combinations" — 60 mist / 30 indigo / 10 cerulean */
 :root{
-  --ground:#f3f6fa;      /* mist        60 */
-  --surface:#ffffff;
-  --ink:#0e2440;         /* indigo      30 */
-  --ink-2:#4b5f79;
-  --ink-3:#8a9ab0;
-  --accent:#2f6fde;      /* cerulean    10 */
-  --accent-soft:#dce8fb;
-  --deep:#16407a;        /* prussian */
-  --hair:#e3e9f1;
-  --track:#e8eef6;
-  --good:#2f6fde;
+  --ground:#f3f6fa; --surface:#ffffff; --ink:#0e2440; --ink-2:#4b5f79; --ink-3:#8a9ab0;
+  --accent:#2f6fde; --accent-2:#6ea8ff; --accent-soft:#dce8fb; --deep:#16407a;
+  --hair:#e3e9f1; --track:#e8eef6;
+  --shadow:0 1px 2px rgba(14,36,64,.04),0 10px 30px rgba(14,36,64,.06);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --ground:#070d18; --surface:#0f1a2b; --ink:#eaf1fb; --ink-2:#a7b6cb; --ink-3:#6c7d95;
-    --accent:#5b97ff; --accent-soft:#16305a; --deep:#9cc0ff; --hair:#1c2a40; --track:#17253a; --good:#5b97ff;
+    --accent:#5b97ff; --accent-2:#8fbaff; --accent-soft:#16305a; --deep:#9cc0ff; --hair:#1c2a40; --track:#17253a;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.25);
   }
 }
 :root[data-theme="dark"]{
   --ground:#070d18; --surface:#0f1a2b; --ink:#eaf1fb; --ink-2:#a7b6cb; --ink-3:#6c7d95;
-  --accent:#5b97ff; --accent-soft:#16305a; --deep:#9cc0ff; --hair:#1c2a40; --track:#17253a; --good:#5b97ff;
+  --accent:#5b97ff; --accent-2:#8fbaff; --accent-soft:#16305a; --deep:#9cc0ff; --hair:#1c2a40; --track:#17253a;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.25);
 }
-*{box-sizing:border-box;margin:0}
-html{-webkit-font-smoothing:antialiased}
-body{background:var(--ground);color:var(--ink);
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-font-smoothing:antialiased;text-size-adjust:100%}
+body{background:var(--ground);color:var(--ink);overflow-x:hidden;
   font:15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",Helvetica,Arial,sans-serif;letter-spacing:-.01em}
-.wrap{max-width:880px;margin:0 auto;padding:48px 16px 80px}
-.eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
-h1{font-size:clamp(34px,6vw,48px);font-weight:700;letter-spacing:-.035em;margin-top:6px}
-h2{font-size:17px;font-weight:600;letter-spacing:-.02em}
-.meta{color:var(--ink-2);margin-top:6px}
+.wrap{max-width:880px;margin:0 auto;padding:calc(28px + env(safe-area-inset-top)) 16px calc(48px + env(safe-area-inset-bottom))}
 .num{font-variant-numeric:tabular-nums}
-.card{background:var(--surface);border-radius:22px;padding:24px;box-shadow:0 1px 2px rgba(14,36,64,.04),0 8px 24px rgba(14,36,64,.05)}
-.stack>*+*{margin-top:16px}
-.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-.head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px}
-.head span{font-size:13px;color:var(--ink-3)}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+h1{font-size:clamp(30px,8vw,48px);font-weight:700;letter-spacing:-.035em;margin-top:4px}
+h2{font-size:17px;font-weight:600;letter-spacing:-.02em}
+.meta{color:var(--ink-2);margin-top:4px;font-size:14px}
+.stack>*+*{margin-top:14px}
+.card{background:var(--surface);border-radius:22px;padding:22px;box-shadow:var(--shadow);
+  opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.card{animation:none;opacity:1;transform:none}}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:16px}
+.head span{font-size:13px;color:var(--ink-3);text-align:right}
 
 /* hero */
-.hero{display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;padding:32px}
-@media(max-width:620px){.hero{grid-template-columns:1fr;justify-items:center;text-align:center}}
-.ring{position:relative;width:188px;height:188px}
+.hero{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;padding:28px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-80px;top:-80px;width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,var(--accent-soft),transparent 70%);pointer-events:none}
+@media(max-width:620px){.hero{grid-template-columns:1fr;justify-items:center;text-align:center;padding:26px 20px}}
+.ring{position:relative;width:180px;height:180px;cursor:pointer;transition:transform .2s}
+.ring:active{transform:scale(.96)}
 .ring svg{transform:rotate(-90deg);display:block}
 .ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.ring .p{font-size:44px;font-weight:700;letter-spacing:-.04em}
-.ring .p small{font-size:22px;color:var(--ink-3);font-weight:600}
-.value{font-size:clamp(32px,5vw,42px);font-weight:700;letter-spacing:-.035em;margin-top:4px}
+.ring .p{font-size:44px;font-weight:700;letter-spacing:-.04em;line-height:1}
+.ring .p small{font-size:20px;color:var(--ink-3);font-weight:600}
+.ring .hint{font-size:11px;color:var(--ink-3);margin-top:6px}
+.value{font-size:clamp(32px,9vw,42px);font-weight:700;letter-spacing:-.035em;margin-top:2px}
 .sub{color:var(--ink-2);font-size:14px}
-.pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--accent-soft);color:var(--deep);margin-top:14px}
-.pill i{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.mood{font-size:15px;font-weight:600;color:var(--deep);margin-top:12px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--accent-soft);color:var(--deep);margin-top:12px}
+.pill i{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.8s infinite}
+@keyframes pulse{50%{opacity:.3}}
 
 /* stats */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair);border-radius:16px;overflow:hidden}
-.stats div{background:var(--surface);padding:18px 16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+.stats div{background:var(--surface);padding:16px 14px}
 .stats b{display:block;font-size:26px;font-weight:700;letter-spacing:-.03em}
 .stats span{font-size:12px;color:var(--ink-3)}
+@media(max-width:400px){.stats b{font-size:22px}.stats div{padding:14px 10px}}
+
+/* milestones */
+.chips{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+@media(max-width:480px){.chips{grid-template-columns:repeat(3,1fr)}}
+.chip{border-radius:14px;padding:12px 6px;text-align:center;background:var(--track);color:var(--ink-3);font-size:12px;font-weight:600;transition:transform .2s}
+.chip b{display:block;font-size:18px;letter-spacing:-.02em}
+.chip.on{background:linear-gradient(160deg,var(--accent),var(--deep));color:#fff}
+.chip.next{outline:2px dashed var(--accent);outline-offset:-2px;color:var(--deep);background:var(--accent-soft)}
+.chip:active{transform:scale(.95)}
 
 /* timeline */
-.tl{position:relative;display:grid;grid-template-columns:repeat(var(--n),1fr);margin:8px 0 4px}
-.tl:before{content:"";position:absolute;left:calc(50%/var(--n));right:calc(50%/var(--n));top:7px;height:2px;background:var(--track)}
-.tl .bar{position:absolute;left:calc(50%/var(--n));top:7px;height:2px;background:var(--accent);transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
-.tl .s{position:relative;text-align:center;font-size:12px;color:var(--ink-3)}
-.tl .dot{width:16px;height:16px;border-radius:50%;margin:0 auto 10px;background:var(--surface);border:2px solid var(--track)}
-.tl .s.done .dot{background:var(--accent);border-color:var(--accent)}
-.tl .s.now .dot{box-shadow:0 0 0 6px var(--accent-soft)}
+.tl{position:relative;display:grid;grid-template-columns:repeat(var(--n),1fr)}
+.tl:before{content:"";position:absolute;left:calc(50%/var(--n));right:calc(50%/var(--n));top:9px;height:3px;border-radius:3px;background:var(--track)}
+.tl .bar{position:absolute;left:calc(50%/var(--n));top:9px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--accent-2),var(--accent));width:0;transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+.tl .s{position:relative;text-align:center;font-size:12px;color:var(--ink-3);line-height:1.25}
+.tl .dot{width:21px;height:21px;border-radius:50%;margin:0 auto 8px;background:var(--surface);border:3px solid var(--track);display:flex;align-items:center;justify-content:center}
 .tl .s.done{color:var(--ink-2)}
+.tl .s.done .dot{background:var(--accent);border-color:var(--accent)}
+.tl .s.done .dot:after{content:"";width:6px;height:6px;border-radius:50%;background:#fff}
+.tl .s.now .dot{box-shadow:0 0 0 6px var(--accent-soft)}
+.tl .s.end .dot{border-color:var(--deep)}
+.tl small{display:block;font-size:10px;color:var(--ink-3)}
+@media(max-width:480px){.tl .s{font-size:10.5px}.tl small{display:none}}
 
 /* chart */
 canvas{display:block;width:100%;height:220px}
-.legend{display:flex;gap:18px;font-size:12px;color:var(--ink-3);margin-top:12px;flex-wrap:wrap}
+@media(max-width:480px){canvas{height:190px}}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--ink-3);margin-top:10px;flex-wrap:wrap}
 .legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:6px}
 
 /* rows */
-.row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--hair)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--hair)}
 .row:first-child{border-top:0;padding-top:0}
-.row .l{display:flex;align-items:center;gap:12px}
-.code{width:32px;height:32px;border-radius:9px;background:var(--accent-soft);color:var(--deep);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
-.row .k{font-weight:500}
+.row .l{display:flex;align-items:center;gap:12px;min-width:0}
+.row .l>div:last-child{min-width:0}
+.ic{flex:0 0 36px;width:36px;height:36px;border-radius:10px;background:var(--accent-soft);color:var(--deep);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.row .k{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row .d{font-size:12px;color:var(--ink-3)}
-.tag{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px}
+.row .r{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:0 0 auto}
+.tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px}
 .tag.a{background:var(--accent);color:#fff}
 .tag.p{background:var(--track);color:var(--ink-3)}
 
-/* track E */
+/* education */
 .cells{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.cells div{height:44px;border-radius:10px;background:var(--track);display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;font-size:10px;color:var(--ink-3)}
+.cells div{aspect-ratio:1/1.15;border-radius:10px;background:var(--track);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:6px;font-size:10px;line-height:1.1;color:var(--ink-3);text-align:center}
+.cells div b{font-size:12px}
 .cells .f{background:var(--accent-soft);color:var(--deep)}
 .cells .d{background:var(--accent);color:#fff}
 .meter{height:6px;border-radius:6px;background:var(--track);overflow:hidden;margin-top:14px}
 .meter i{display:block;height:100%;background:var(--accent);width:0;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
-.foot{text-align:center;font-size:12px;color:var(--ink-3);margin-top:40px}
+.key{display:flex;gap:14px;font-size:12px;color:var(--ink-3);margin-top:10px;flex-wrap:wrap}
+.key i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+
+/* install */
+.app{display:flex;align-items:center;gap:16px}
+.app img{width:56px;height:56px;border-radius:13px;flex:0 0 auto;box-shadow:var(--shadow)}
+.app .t{flex:1;min-width:0}
+.btn{appearance:none;border:0;border-radius:999px;padding:11px 20px;font:600 15px/1 inherit;font-family:inherit;
+  background:var(--accent);color:#fff;cursor:pointer;transition:transform .15s,opacity .15s;white-space:nowrap}
+.btn:active{transform:scale(.96)}
+.btn[disabled]{background:var(--track);color:var(--ink-3);cursor:default}
+.howto{font-size:13px;color:var(--ink-2);margin-top:14px;padding-top:14px;border-top:1px solid var(--hair);display:none}
+.howto.show{display:block}
+@media(max-width:420px){.app{flex-wrap:wrap}.btn{width:100%}}
+
+.foot{text-align:center;font-size:12px;color:var(--ink-3);margin-top:32px}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:9}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,120px);background:var(--ink);color:var(--ground);
+  padding:12px 18px;border-radius:14px;font-size:14px;font-weight:500;transition:transform .4s cubic-bezier(.2,.8,.2,1),opacity .3s;opacity:0;z-index:10;max-width:calc(100% - 32px);text-align:center}
+.toast.show{transform:translate(-50%,0);opacity:1}
 </style>
 </head>
 <body>
+<canvas id="confetti"></canvas>
 <main class="wrap">
-  <header style="margin-bottom:28px">
-    <div class="eyebrow">Private ledger</div>
-    <h1>Project 84</h1>
+  <header style="margin-bottom:22px">
+    <div class="eyebrow">Savings tracker</div>
+    <h1>Road to Baisakh</h1>
     <p class="meta" id="updated"></p>
   </header>
 
   <div class="stack">
-    <section class="card hero">
-      <div class="ring">
-        <svg width="188" height="188" viewBox="0 0 188 188">
-          <circle cx="94" cy="94" r="82" fill="none" stroke="var(--track)" stroke-width="12"/>
-          <circle id="arc" cx="94" cy="94" r="82" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round"
-            stroke-dasharray="515.2" stroke-dashoffset="515.2" style="transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)"/>
+    <section class="card hero" style="animation-delay:.05s">
+      <div class="ring" id="ring" title="Tap to celebrate">
+        <svg width="180" height="180" viewBox="0 0 180 180">
+          <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--accent-2)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
+          <circle cx="90" cy="90" r="78" fill="none" stroke="var(--track)" stroke-width="13"/>
+          <circle id="arc" cx="90" cy="90" r="78" fill="none" stroke="url(#g)" stroke-width="13" stroke-linecap="round"
+            stroke-dasharray="490.1" stroke-dashoffset="490.1" style="transition:stroke-dashoffset 1.6s cubic-bezier(.2,.8,.2,1)"/>
         </svg>
-        <div class="c"><div class="p num"><span id="pct">0</span><small>%</small></div><div class="sub">of target</div></div>
+        <div class="c"><div class="p num"><span id="pct">0</span><small>%</small></div><div class="hint">tap me</div></div>
       </div>
-      <div>
-        <div class="eyebrow">Vault S</div>
-        <div class="value num" id="fund">—</div>
+      <div style="position:relative;z-index:1">
+        <div class="eyebrow">Marriage fund · Sanima</div>
+        <div class="value num" id="fund">Rs 0</div>
         <div class="sub num" id="target"></div>
+        <div class="mood" id="mood"></div>
         <div class="pill"><i></i><span id="status"></span></div>
       </div>
     </section>
 
-    <section class="stats">
-      <div><b class="num" id="days">—</b><span>Days to C1</span></div>
-      <div><b class="num" id="left">—</b><span>Cycles left</span></div>
-      <div><b class="num" id="gap">—</b><span>Remaining</span></div>
+    <section class="stats card" style="padding:0;animation-delay:.1s">
+      <div><b class="num" id="days">—</b><span>Days to Chaitra</span></div>
+      <div><b class="num" id="left">—</b><span>Paydays left</span></div>
+      <div><b class="num" id="gap">—</b><span>Still to save</span></div>
     </section>
 
-    <section class="card">
-      <div class="head"><h2>Cycles</h2><span id="cycleNote"></span></div>
+    <section class="card" style="animation-delay:.15s">
+      <div class="head"><h2>Milestones</h2><span id="msNote"></span></div>
+      <div class="chips" id="chips"></div>
+    </section>
+
+    <section class="card" style="animation-delay:.2s">
+      <div class="head"><h2>Payday journey</h2><span id="cycleNote"></span></div>
       <div class="tl" id="tl"><div class="bar" id="tlbar"></div></div>
     </section>
 
-    <section class="card">
-      <div class="head"><h2>Trajectory</h2><span>Actual vs plan</span></div>
+    <section class="card" style="animation-delay:.25s">
+      <div class="head"><h2>Actual vs plan</h2><span>Marriage fund</span></div>
       <canvas id="chart"></canvas>
       <div class="legend">
         <span><i style="background:var(--accent);height:3px"></i>Actual</span>
         <span><i style="background:repeating-linear-gradient(90deg,var(--ink-3) 0 4px,transparent 4px 8px)"></i>Plan</span>
-        <span><i style="background:repeating-linear-gradient(90deg,var(--deep) 0 2px,transparent 2px 5px)"></i>Target</span>
+        <span><i style="background:repeating-linear-gradient(90deg,var(--deep) 0 2px,transparent 2px 5px)"></i>Goal</span>
       </div>
     </section>
 
     <div class="grid">
-      <section class="card">
-        <div class="head"><h2>Track E</h2><span id="eNote"></span></div>
+      <section class="card" style="animation-delay:.3s">
+        <div class="head"><h2>Education fees</h2><span id="eNote"></span></div>
         <div class="cells" id="cells"></div>
         <div class="meter"><i id="eMeter"></i></div>
+        <div class="key">
+          <span><i style="background:var(--accent)"></i>Paid</span>
+          <span><i style="background:var(--accent-soft)"></i>Money ready</span>
+          <span><i style="background:var(--track)"></i>To save</span>
+        </div>
       </section>
-      <section class="card">
-        <div class="head"><h2>Reserves</h2><span>Not yet counted</span></div>
+      <section class="card" style="animation-delay:.35s">
+        <div class="head"><h2>Safety nets</h2><span>Not counted yet</span></div>
         <div id="reserves"></div>
-        <div class="row"><div class="k">Outlook</div><div class="num" style="font-weight:700" id="outlook"></div></div>
+        <div class="row"><div class="k" style="font-weight:600">Total by the wedding</div><div class="num" style="font-weight:700" id="outlook"></div></div>
       </section>
     </div>
 
-    <section class="card">
-      <div class="head"><h2>Log</h2><span>Per cycle</span></div>
+    <section class="card" style="animation-delay:.4s">
+      <div class="head"><h2>Payday log</h2><span>To marriage fund</span></div>
       <div id="log"></div>
     </section>
 
-    <section class="card">
-      <div class="head"><h2>Positions</h2><span id="posDate"></span></div>
+    <section class="card" style="animation-delay:.45s">
+      <div class="head"><h2>Accounts</h2><span id="posDate"></span></div>
       <div id="pos"></div>
     </section>
+
+    <section class="card" style="animation-delay:.5s" id="install">
+      <div class="app">
+        <img src="icon-192.png" alt="">
+        <div class="t">
+          <h2>Get the app</h2>
+          <div class="sub" id="appSub">Add it to your home screen. It opens full screen and works offline.</div>
+        </div>
+        <button class="btn" id="installBtn">Install</button>
+      </div>
+      <div class="howto" id="howto"></div>
+    </section>
   </div>
-  <p class="foot">Updated each cycle.</p>
+  <p class="foot">Updated every payday · Amounts in NPR</p>
 </main>
+<div class="toast" id="toast"></div>
 
 <script>
-/* ============ DATA — updated each cycle ============ */
+/* ===================== DATA — updated every payday ===================== */
 const D = {
-  updated:"2026-11-13", label:"K29",
-  target:500000, stretch:600000, deadline:"2027-03-15",
-  cycles:[
-    {c:"A29", date:"2026-10-15", add:149543, bal:327697, s:"a"},
-    {c:"K29", date:"2026-11-13", add:23970,  bal:336266, s:"a"},
-    {c:"M29", date:"2026-12-14", add:27909,  bal:364175, s:"p"},
-    {c:"P29", date:"2027-01-13", add:30033,  bal:394208, s:"p"},
-    {c:"Mg29",date:"2027-02-12", add:18033,  bal:412241, s:"p"},
-    {c:"F29", date:"2027-03-13", add:18033,  bal:430274, s:"p"}
+  updated:"2026-11-13", updatedBS:"Kartik 29, 2083",
+  goal:500000, stretch:600000, deadline:"2027-03-15", deadlineBS:"Chaitra week 1",
+  paydays:[
+    {bs:"Asoj 29",   date:"2026-10-15", add:149543, bal:327697, s:"a"},
+    {bs:"Kartik 29", date:"2026-11-13", add:23970,  bal:336266, s:"a"},
+    {bs:"Mangsir 29",date:"2026-12-14", add:27909,  bal:364175, s:"p"},
+    {bs:"Poush 29",  date:"2027-01-13", add:30033,  bal:394208, s:"p"},
+    {bs:"Magh 29",   date:"2027-02-12", add:18033,  bal:412241, s:"p"},
+    {bs:"Falgun 29", date:"2027-03-13", add:18033,  bal:430274, s:"p"}
   ],
-  trackE:["f","f","o","o","o","o","o"],   // d = done, f = funded, o = open
+  education:[  // d = paid, f = money ready, o = still to save
+    {due:"Nov 26", s:"f"}, {due:"Feb 27", s:"f"}, {due:"May 27", s:"o"}, {due:"Aug 27", s:"o"},
+    {due:"Nov 27", s:"o"}, {due:"Feb 28", s:"o"}, {due:"May 28", s:"o"}
+  ],
   reserves:[
-    {code:"R", k:"R-box", d:"14 / 36 · paused", v:42000},
-    {code:"B", k:"B-final", d:"Expected after C1", v:56000},
-    {code:"C", k:"C-cycle", d:"After C1", v:19000}
+    {ic:"RD", k:"Recurring deposit", d:"Paused · 14 of 36 done", v:42000},
+    {ic:"B",  k:"Final bonus",       d:"Arrives in Baisakh",     v:56000},
+    {ic:"C",  k:"Chaitra salary",    d:"After the deadline",     v:19000}
   ],
-  positions:[
-    {code:"N",  k:"N",  d:"Base",    v:18781},
-    {code:"S",  k:"S",  d:"Vault",   v:336266},
-    {code:"Si", k:"Si", d:"Track E", v:72433},
-    {code:"K",  k:"K",  d:"Daily",   v:15656},
-    {code:"Mj", k:"Mj", d:"Hedge",   v:189},
-    {code:"E",  k:"E",  d:"Give",    v:815}
+  accounts:[
+    {ic:"NMB", k:"NMB Bank",   d:"Salary",         v:18781},
+    {ic:"SAN", k:"Sanima",     d:"Marriage fund",  v:336266},
+    {ic:"SBL", k:"Siddhartha", d:"Education",      v:72433},
+    {ic:"KH",  k:"Khalti",     d:"Daily spending", v:15656},
+    {ic:"MJ",  k:"Manjushree", d:"Festival hedge", v:189},
+    {ic:"eS",  k:"eSewa",      d:"Donation",       v:815}
   ]
 };
-/* =================================================== */
+/* ======================================================================= */
 
-const $ = id => document.getElementById(id);
-const f = n => Math.round(n).toLocaleString("en-IN");
-const fk = n => (n/1000).toFixed(n>=100000?0:1).replace(/\.0$/,"") + "k";
-const A = D.cycles.filter(x=>x.s==="a"), cur = A[A.length-1], N = D.cycles.length, ci = D.cycles.indexOf(cur);
-const pct = Math.min(cur.bal/D.target,1);
-const end = D.cycles[N-1].bal;
+const $=id=>document.getElementById(id);
+const f=n=>Math.round(n).toLocaleString("en-IN");
+const fk=n=>n>=100000?(n/100000).toFixed(2).replace(/0$/,"")+"L":Math.round(n/1000)+"k";
+const P=D.paydays, A=P.filter(x=>x.s==="a"), cur=A[A.length-1], N=P.length, ci=P.indexOf(cur);
+const pct=Math.min(cur.bal/D.goal,1), end=P[N-1].bal;
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-$("updated").textContent = `Cycle ${D.label} · ${new Date(D.updated).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}`;
-$("fund").textContent = "Rs " + f(cur.bal);
-$("target").textContent = `Target Rs ${f(D.target)} by C1`;
-const onTrack = A.every(a=>a.bal>=0);
-$("status").textContent = end >= D.target ? "On track" : `Plan reaches ${Math.round(end/D.target*100)}% by C1`;
-requestAnimationFrame(()=>{ $("arc").style.strokeDashoffset = 515.2*(1-pct); });
-let k=0, goal=Math.round(pct*100); const t=setInterval(()=>{ $("pct").textContent=++k; if(k>=goal) clearInterval(t); },14);
+$("updated").textContent=`Last update · ${D.updatedBS}`;
+$("target").textContent=`Goal Rs ${f(D.goal)} by ${D.deadlineBS}`;
+$("status").textContent=end>=D.goal?"Plan hits the goal":`Plan reaches ${Math.round(end/D.goal*100)}% by Chaitra`;
 
-const days = Math.max(0,Math.round((new Date(D.deadline)-new Date(D.updated))/864e5));
-$("days").textContent = days;
-$("left").textContent = D.cycles.filter(x=>x.s==="p").length;
-$("gap").textContent = fk(Math.max(0,D.target-cur.bal));
+const moods=[[.9,"Almost there. Hold steady."],[.8,"The finish line is in sight."],[.7,"Seventy percent. Strong."],
+  [.6,"Past sixty. Momentum is real."],[.5,"Halfway and climbing."],[0,"Every payday counts."]];
+$("mood").textContent=pct>=1?"Goal reached. Well done!":moods.find(m=>pct>=m[0])[1];
+
+// count-up animations
+function countUp(el,to,fmt,ms=1400){
+  if(reduce){el.textContent=fmt(to);return}
+  const t0=performance.now();
+  (function tick(t){const k=Math.min((t-t0)/ms,1),e=1-Math.pow(1-k,3);el.textContent=fmt(to*e);if(k<1)requestAnimationFrame(tick)})(t0);
+}
+countUp($("fund"),cur.bal,n=>"Rs "+f(n));
+countUp($("pct"),pct*100,n=>Math.round(n));
+requestAnimationFrame(()=>setTimeout(()=>{$("arc").style.strokeDashoffset=490.1*(1-pct)},100));
+
+$("days").textContent=Math.max(0,Math.round((new Date(D.deadline)-new Date(D.updated))/864e5));
+$("left").textContent=P.filter(x=>x.s==="p").length;
+$("gap").textContent=fk(Math.max(0,D.goal-cur.bal));
+
+// milestones
+const ms=[50,60,70,80,90,100], hit=ms.filter(m=>pct*100>=m).length;
+$("chips").innerHTML=ms.map((m,i)=>`<div class="chip ${i<hit?"on":i===hit?"next":""}" data-m="${m}"><b>${m}%</b>${i<hit?"Unlocked":i===hit?"Next up":"Locked"}</div>`).join("");
+const nextM=ms[hit];
+$("msNote").textContent=nextM?`Rs ${f(D.goal*nextM/100-cur.bal)} to ${nextM}%`:"All unlocked";
+document.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{
+  const m=+c.dataset.m; toast(pct*100>=m?`${m}% unlocked. Nice work.`:`Rs ${f(D.goal*m/100-cur.bal)} more to unlock ${m}%.`);
+});
 
 // timeline
 const tl=$("tl"); tl.style.setProperty("--n",N);
-D.cycles.forEach((x,i)=>{ const s=document.createElement("div");
-  s.className="s"+(x.s==="a"?" done":"")+(i===ci?" now":""); s.innerHTML=`<div class="dot"></div>${x.c}`; tl.appendChild(s); });
-$("tlbar").style.width="0";
-setTimeout(()=>{ $("tlbar").style.width=`calc(${ci/(N-1)} * (100% - 100%/${N}))`; },150);
-$("cycleNote").textContent = `${A.length} of ${N} complete`;
+P.forEach((x,i)=>{const s=document.createElement("div");
+  s.className="s"+(x.s==="a"?" done":"")+(i===ci?" now":"")+(i===N-1?" end":"");
+  s.innerHTML=`<div class="dot"></div>${x.bs.split(" ")[0]}<small>${fk(x.bal)}</small>`;tl.appendChild(s)});
+setTimeout(()=>{$("tlbar").style.width=`calc(${ci/(N-1)} * (100% - 100% / ${N}))`},250);
+$("cycleNote").textContent=`${A.length} of ${N} done`;
 
-// track E
-$("cells").innerHTML = D.trackE.map((s,i)=>`<div class="${s==='o'?'':s}">${i+1}</div>`).join("");
-const ready = D.trackE.filter(s=>s!=="o").length;
-$("eNote").textContent = `${ready} of ${D.trackE.length} covered`;
-setTimeout(()=>{ $("eMeter").style.width = ready/D.trackE.length*100+"%"; },150);
+// education
+$("cells").innerHTML=D.education.map(e=>`<div class="${e.s==="o"?"":e.s}"><b>${e.s==="d"?"✓":""}</b>${e.due}</div>`).join("");
+const ready=D.education.filter(e=>e.s!=="o").length;
+$("eNote").textContent=`${ready} of ${D.education.length} covered`;
+setTimeout(()=>{$("eMeter").style.width=ready/D.education.length*100+"%"},300);
 
-// reserves
-const row = r => `<div class="row"><div class="l"><div class="code">${r.code}</div><div><div class="k">${r.k}</div><div class="d">${r.d}</div></div></div><div class="num">${f(r.v)}</div></div>`;
-$("reserves").innerHTML = D.reserves.map(row).join("");
-$("outlook").textContent = f(end + D.reserves.reduce((a,r)=>a+r.v,0));
-
-// log
-$("log").innerHTML = D.cycles.map(x=>`<div class="row"><div class="l"><div class="code">${x.c.replace(/29$/,"")}</div>
-  <div><div class="k num">+ ${f(x.add)}</div><div class="d">${x.date}</div></div></div>
-  <div style="display:flex;gap:12px;align-items:center"><span class="num">${f(x.bal)}</span><span class="tag ${x.s}">${x.s==="a"?"Actual":"Plan"}</span></div></div>`).join("");
-
-// positions
-$("pos").innerHTML = D.positions.map(row).join("");
-$("posDate").textContent = D.label;
+// rows
+const row=r=>`<div class="row"><div class="l"><div class="ic">${r.ic}</div><div><div class="k">${r.k}</div><div class="d">${r.d}</div></div></div><div class="num" style="font-weight:600">${f(r.v)}</div></div>`;
+$("reserves").innerHTML=D.reserves.map(row).join("");
+$("outlook").textContent="Rs "+f(end+D.reserves.reduce((a,r)=>a+r.v,0));
+$("pos").innerHTML=D.accounts.map(row).join("");
+$("posDate").textContent=D.updatedBS;
+$("log").innerHTML=P.map(x=>`<div class="row"><div class="l"><div class="ic">${x.bs.slice(0,2)}</div>
+  <div><div class="k">${x.bs}</div><div class="d num">+ ${f(x.add)}</div></div></div>
+  <div class="r"><span class="num" style="font-weight:600">${f(x.bal)}</span><span class="tag ${x.s}">${x.s==="a"?"Actual":"Plan"}</span></div></div>`).join("");
 
 // chart
 function draw(){
-  const c=$("chart"), r=devicePixelRatio||1, W=c.clientWidth, H=c.clientHeight;
-  c.width=W*r; c.height=H*r; const x=c.getContext("2d"); x.scale(r,r);
+  const c=$("chart"),r=devicePixelRatio||1,W=c.clientWidth,H=c.clientHeight;
+  c.width=W*r;c.height=H*r;const x=c.getContext("2d");x.scale(r,r);
   const v=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-  const P={l:40,r:16,t:10,b:24}, lo=300000, hi=D.target+25000;
-  const X=i=>P.l+i/(N-1)*(W-P.l-P.r), Y=n=>P.t+(1-(n-lo)/(hi-lo))*(H-P.t-P.b);
-  x.font="11px -apple-system,BlinkMacSystemFont,sans-serif"; x.textBaseline="middle";
-  for(let n=lo;n<=hi;n+=50000){ x.fillStyle=v("--ink-3"); x.fillText(n/1000+"k",0,Y(n));
-    x.strokeStyle=v("--hair"); x.lineWidth=1; x.beginPath(); x.moveTo(P.l,Y(n)); x.lineTo(W-P.r,Y(n)); x.stroke(); }
-  x.textAlign="center"; D.cycles.forEach((q,i)=>{ x.fillStyle=v("--ink-3"); x.fillText(q.c,X(i),H-8); }); x.textAlign="left";
-  x.strokeStyle=v("--deep"); x.setLineDash([2,3]); x.lineWidth=1.5;
-  x.beginPath(); x.moveTo(P.l,Y(D.target)); x.lineTo(W-P.r,Y(D.target)); x.stroke();
-  x.strokeStyle=v("--ink-3"); x.setLineDash([4,4]); x.beginPath();
-  D.cycles.slice(ci).forEach((q,j)=>{ const i=ci+j; j?x.lineTo(X(i),Y(q.bal)):x.moveTo(X(i),Y(q.bal)); }); x.stroke();
-  x.setLineDash([]);
-  const g=x.createLinearGradient(0,P.t,0,H-P.b); g.addColorStop(0,v("--accent-soft")); g.addColorStop(1,"transparent");
-  x.beginPath(); A.forEach((q,i)=> i?x.lineTo(X(i),Y(q.bal)):x.moveTo(X(i),Y(q.bal)));
-  x.lineTo(X(ci),H-P.b); x.lineTo(X(0),H-P.b); x.closePath(); x.fillStyle=g; x.fill();
-  x.strokeStyle=v("--accent"); x.lineWidth=2.5; x.lineJoin="round"; x.beginPath();
-  A.forEach((q,i)=> i?x.lineTo(X(i),Y(q.bal)):x.moveTo(X(i),Y(q.bal))); x.stroke();
-  A.forEach((q,i)=>{ x.beginPath(); x.arc(X(i),Y(q.bal),4,0,7); x.fillStyle=v("--surface"); x.fill(); x.lineWidth=2; x.stroke(); });
+  const small=W<420, pd={l:small?34:40,r:small?14:20,t:10,b:24}, lo=300000, hi=D.goal+25000;
+  const X=i=>pd.l+i/(N-1)*(W-pd.l-pd.r), Y=n=>pd.t+(1-(n-lo)/(hi-lo))*(H-pd.t-pd.b);
+  x.font=`${small?10:11}px -apple-system,BlinkMacSystemFont,sans-serif`;x.textBaseline="middle";
+  for(let n=lo;n<=hi;n+=50000){x.fillStyle=v("--ink-3");x.fillText(n/1000+"k",0,Y(n));
+    x.strokeStyle=v("--hair");x.lineWidth=1;x.beginPath();x.moveTo(pd.l,Y(n));x.lineTo(W-pd.r,Y(n));x.stroke()}
+  x.textAlign="center";P.forEach((q,i)=>{x.fillStyle=v("--ink-3");x.fillText(small?q.bs.slice(0,3):q.bs.split(" ")[0],X(i),H-8)});x.textAlign="left";
+  x.strokeStyle=v("--deep");x.setLineDash([2,3]);x.lineWidth=1.5;x.beginPath();x.moveTo(pd.l,Y(D.goal));x.lineTo(W-pd.r,Y(D.goal));x.stroke();
+  x.strokeStyle=v("--ink-3");x.setLineDash([4,4]);x.beginPath();
+  P.slice(ci).forEach((q,j)=>{const i=ci+j;j?x.lineTo(X(i),Y(q.bal)):x.moveTo(X(i),Y(q.bal))});x.stroke();x.setLineDash([]);
+  const g=x.createLinearGradient(0,pd.t,0,H-pd.b);g.addColorStop(0,v("--accent-soft"));g.addColorStop(1,"rgba(0,0,0,0)");
+  x.beginPath();A.forEach((q,i)=>i?x.lineTo(X(i),Y(q.bal)):x.moveTo(X(i),Y(q.bal)));x.lineTo(X(ci),H-pd.b);x.lineTo(X(0),H-pd.b);x.closePath();x.fillStyle=g;x.fill();
+  x.strokeStyle=v("--accent");x.lineWidth=2.5;x.lineJoin="round";x.beginPath();A.forEach((q,i)=>i?x.lineTo(X(i),Y(q.bal)):x.moveTo(X(i),Y(q.bal)));x.stroke();
+  A.forEach((q,i)=>{x.beginPath();x.arc(X(i),Y(q.bal),4,0,7);x.fillStyle=v("--surface");x.fill();x.lineWidth=2;x.stroke()});
 }
-draw(); addEventListener("resize",draw);
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change",draw);
+draw();addEventListener("resize",draw);matchMedia("(prefers-color-scheme: dark)").addEventListener("change",draw);
+
+// toast
+let tt;function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),2400)}
+
+// confetti (blue tones)
+function confetti(){
+  if(reduce)return;
+  const c=$("confetti"),r=devicePixelRatio||1;c.width=innerWidth*r;c.height=innerHeight*r;
+  const x=c.getContext("2d");x.scale(r,r);
+  const cols=["#2f6fde","#6ea8ff","#16407a","#dce8fb","#ffffff"];
+  const ps=Array.from({length:110},()=>({x:innerWidth/2,y:innerHeight*.3,vx:(Math.random()-.5)*12,vy:Math.random()*-12-4,
+    s:Math.random()*6+4,c:cols[Math.random()*cols.length|0],a:Math.random()*6,va:(Math.random()-.5)*.3}));
+  let fr=0;(function loop(){x.clearRect(0,0,innerWidth,innerHeight);
+    ps.forEach(p=>{p.vy+=.35;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.a+=p.va;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore()});
+    if(++fr<150)requestAnimationFrame(loop);else x.clearRect(0,0,innerWidth,innerHeight)})();
+}
+$("ring").onclick=()=>{confetti();toast(`${Math.round(pct*100)}% of the way. Keep going!`)};
+// celebrate once per new update
+try{const k="seen-"+D.updated;if(!localStorage.getItem(k)){setTimeout(confetti,900);localStorage.setItem(k,"1")}}catch(e){}
+
+// ---------- install as app ----------
+if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
+let deferred=null;
+const btn=$("installBtn"), how=$("howto"), sub=$("appSub");
+const standalone=matchMedia("(display-mode: standalone)").matches||navigator.standalone;
+const iOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+if(standalone){btn.textContent="Installed";btn.disabled=true;sub.textContent="You are using the app version."}
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e;btn.textContent="Install";btn.disabled=false});
+addEventListener("appinstalled",()=>{btn.textContent="Installed";btn.disabled=true;toast("App installed. Find it on your home screen.");confetti()});
+btn.onclick=async()=>{
+  if(deferred){deferred.prompt();await deferred.userChoice;deferred=null;return}
+  how.classList.add("show");
+  how.innerHTML=iOS
+    ?"<b>On iPhone:</b> open this page in Safari. Tap the <b>Share</b> button, then <b>Add to Home Screen</b>."
+    :"<b>In Chrome:</b> open the menu (⋮) and choose <b>Install app</b> or <b>Add to Home screen</b>. On a computer, you can also click the install icon at the right of the address bar.";
+};
 </script>
 </body>
 </html>
