@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Project 84</title>
+<style>
+/* Palette: blues after Sanzo Wada's "A Dictionary of Color Combinations".
+   60% mist ground · 30% indigo ink · 10% cerulean accent. */
+:root{
+  --ground:#f3f6fa;      /* mist        60 */
+  --surface:#ffffff;
+  --ink:#0e2440;         /* indigo      30 */
+  --ink-2:#4b5f79;
+  --ink-3:#8a9ab0;
+  --accent:#2f6fde;      /* cerulean    10 */
+  --accent-soft:#dce8fb;
+  --deep:#16407a;        /* prussian */
+  --hair:#e3e9f1;
+  --track:#e8eef6;
+  --good:#2f6fde;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#070d18; --surface:#0f1a2b; --ink:#eaf1fb; --ink-2:#a7b6cb; --ink-3:#6c7d95;
+    --accent:#5b97ff; --accent-soft:#16305a; --deep:#9cc0ff; --hair:#1c2a40; --track:#17253a; --good:#5b97ff;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#070d18; --surface:#0f1a2b; --ink:#eaf1fb; --ink-2:#a7b6cb; --ink-3:#6c7d95;
+  --accent:#5b97ff; --accent-soft:#16305a; --deep:#9cc0ff; --hair:#1c2a40; --track:#17253a; --good:#5b97ff;
+}
+*{box-sizing:border-box;margin:0}
+html{-webkit-font-smoothing:antialiased}
+body{background:var(--ground);color:var(--ink);
+  font:15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",Helvetica,Arial,sans-serif;letter-spacing:-.01em}
+.wrap{max-width:880px;margin:0 auto;padding:48px 16px 80px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+h1{font-size:clamp(34px,6vw,48px);font-weight:700;letter-spacing:-.035em;margin-top:6px}
+h2{font-size:17px;font-weight:600;letter-spacing:-.02em}
+.meta{color:var(--ink-2);margin-top:6px}
+.num{font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border-radius:22px;padding:24px;box-shadow:0 1px 2px rgba(14,36,64,.04),0 8px 24px rgba(14,36,64,.05)}
+.stack>*+*{margin-top:16px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px}
+.head span{font-size:13px;color:var(--ink-3)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;padding:32px}
+@media(max-width:620px){.hero{grid-template-columns:1fr;justify-items:center;text-align:center}}
+.ring{position:relative;width:188px;height:188px}
+.ring svg{transform:rotate(-90deg);display:block}
+.ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .p{font-size:44px;font-weight:700;letter-spacing:-.04em}
+.ring .p small{font-size:22px;color:var(--ink-3);font-weight:600}
+.value{font-size:clamp(32px,5vw,42px);font-weight:700;letter-spacing:-.035em;margin-top:4px}
+.sub{color:var(--ink-2);font-size:14px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--accent-soft);color:var(--deep);margin-top:14px}
+.pill i{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair);border-radius:16px;overflow:hidden}
+.stats div{background:var(--surface);padding:18px 16px}
+.stats b{display:block;font-size:26px;font-weight:700;letter-spacing:-.03em}
+.stats span{font-size:12px;color:var(--ink-3)}
+
+/* timeline */
+.tl{position:relative;display:grid;grid-template-columns:repeat(var(--n),1fr);margin:8px 0 4px}
+.tl:before{content:"";position:absolute;left:calc(50%/var(--n));right:calc(50%/var(--n));top:7px;height:2px;background:var(--track)}
+.tl .bar{position:absolute;left:calc(50%/var(--n));top:7px;height:2px;background:var(--accent);transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.tl .s{position:relative;text-align:center;font-size:12px;color:var(--ink-3)}
+.tl .dot{width:16px;height:16px;border-radius:50%;margin:0 auto 10px;background:var(--surface);border:2px solid var(--track)}
+.tl .s.done .dot{background:var(--accent);border-color:var(--accent)}
+.tl .s.now .dot{box-shadow:0 0 0 6px var(--accent-soft)}
+.tl .s.done{color:var(--ink-2)}
+
+/* chart */
+canvas{display:block;width:100%;height:220px}
+.legend{display:flex;gap:18px;font-size:12px;color:var(--ink-3);margin-top:12px;flex-wrap:wrap}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:6px}
+
+/* rows */
+.row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--hair)}
+.row:first-child{border-top:0;padding-top:0}
+.row .l{display:flex;align-items:center;gap:12px}
+.code{width:32px;height:32px;border-radius:9px;background:var(--accent-soft);color:var(--deep);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.row .k{font-weight:500}
+.row .d{font-size:12px;color:var(--ink-3)}
+.tag{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px}
+.tag.a{background:var(--accent);color:#fff}
+.tag.p{background:var(--track);color:var(--ink-3)}
+
+/* track E */
+.cells{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cells div{height:44px;border-radius:10px;background:var(--track);display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;font-size:10px;color:var(--ink-3)}
+.cells .f{background:var(--accent-soft);color:var(--deep)}
+.cells .d{background:var(--accent);color:#fff}
+.meter{height:6px;border-radius:6px;background:var(--track);overflow:hidden;margin-top:14px}
+.meter i{display:block;height:100%;background:var(--accent);width:0;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.foot{text-align:center;font-size:12px;color:var(--ink-3);margin-top:40px}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header style="margin-bottom:28px">
+    <div class="eyebrow">Private ledger</div>
+    <h1>Project 84</h1>
+    <p class="meta" id="updated"></p>
+  </header>
+
+  <div class="stack">
+    <section class="card hero">
+      <div class="ring">
+        <svg width="188" height="188" viewBox="0 0 188 188">
+          <circle cx="94" cy="94" r="82" fill="none" stroke="var(--track)" stroke-width="12"/>
+          <circle id="arc" cx="94" cy="94" r="82" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round"
+            stroke-dasharray="515.2" stroke-dashoffset="515.2" style="transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)"/>
+        </svg>
+        <div class="c"><div class="p num"><span id="pct">0</span><small>%</small></div><div class="sub">of target</div></div>
+      </div>
+      <div>
+        <div class="eyebrow">Vault S</div>
+        <div class="value num" id="fund">—</div>
+        <div class="sub num" id="target"></div>
+        <div class="pill"><i></i><span id="status"></span></div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div><b class="num" id="days">—</b><span>Days to C1</span></div>
+      <div><b class="num" id="left">—</b><span>Cycles left</span></div>
+      <div><b class="num" id="gap">—</b><span>Remaining</span></div>
+    </section>
+
+    <section class="card">
+      <div class="head"><h2>Cycles</h2><span id="cycleNote"></span></div>
+      <div class="tl" id="tl"><div class="bar" id="tlbar"></div></div>
+    </section>
+
+    <section class="card">
+      <div class="head"><h2>Trajectory</h2><span>Actual vs plan</span></div>
+      <canvas id="chart"></canvas>
+      <div class="legend">
+        <span><i style="background:var(--accent);height:3px"></i>Actual</span>
+        <span><i style="background:repeating-linear-gradient(90deg,var(--ink-3) 0 4px,transparent 4px 8px)"></i>Plan</span>
+        <span><i style="background:repeating-linear-gradient(90deg,var(--deep) 0 2px,transparent 2px 5px)"></i>Target</span>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <div class="head"><h2>Track E</h2><span id="eNote"></span></div>
+        <div class="cells" id="cells"></div>
+        <div class="meter"><i id="eMeter"></i></div>
+      </section>
+      <section class="card">
+        <div class="head"><h2>Reserves</h2><span>Not yet counted</span></div>
+        <div id="reserves"></div>
+        <div class="row"><div class="k">Outlook</div><div class="num" style="font-weight:700" id="outlook"></div></div>
+      </section>
+    </div>
+
+    <section class="card">
+      <div class="head"><h2>Log</h2><span>Per cycle</span></div>
+      <div id="log"></div>
+    </section>
+
+    <section class="card">
+      <div class="head"><h2>Positions</h2><span id="posDate"></span></div>
+      <div id="pos"></div>
+    </section>
+  </div>
+  <p class="foot">Updated each cycle.</p>
+</main>
+
+<script>
+/* ============ DATA — updated each cycle ============ */
+const D = {
+  updated:"2026-11-13", label:"K29",
+  target:500000, stretch:600000, deadline:"2027-03-15",
+  cycles:[
+    {c:"A29", date:"2026-10-15", add:149543, bal:327697, s:"a"},
+    {c:"K29", date:"2026-11-13", add:23970,  bal:336266, s:"a"},
+    {c:"M29", date:"2026-12-14", add:27909,  bal:364175, s:"p"},
+    {c:"P29", date:"2027-01-13", add:30033,  bal:394208, s:"p"},
+    {c:"Mg29",date:"2027-02-12", add:18033,  bal:412241, s:"p"},
+    {c:"F29", date:"2027-03-13", add:18033,  bal:430274, s:"p"}
+  ],
+  trackE:["f","f","o","o","o","o","o"],   // d = done, f = funded, o = open
+  reserves:[
+    {code:"R", k:"R-box", d:"14 / 36 · paused", v:42000},
+    {code:"B", k:"B-final", d:"Expected after C1", v:56000},
+    {code:"C", k:"C-cycle", d:"After C1", v:19000}
+  ],
+  positions:[
+    {code:"N",  k:"N",  d:"Base",    v:18781},
+    {code:"S",  k:"S",  d:"Vault",   v:336266},
+    {code:"Si", k:"Si", d:"Track E", v:72433},
+    {code:"K",  k:"K",  d:"Daily",   v:15656},
+    {code:"Mj", k:"Mj", d:"Hedge",   v:189},
+    {code:"E",  k:"E",  d:"Give",    v:815}
+  ]
+};
+/* =================================================== */
+
+const $ = id => document.getElementById(id);
+const f = n => Math.round(n).toLocaleString("en-IN");
+const fk = n => (n/1000).toFixed(n>=100000?0:1).replace(/\.0$/,"") + "k";
+const A = D.cycles.filter(x=>x.s==="a"), cur = A[A.length-1], N = D.cycles.length, ci = D.cycles.indexOf(cur);
+const pct = Math.min(cur.bal/D.target,1);
+const end = D.cycles[N-1].bal;
+
+$("updated").textContent = `Cycle ${D.label} · ${new Date(D.updated).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}`;
+$("fund").textContent = "Rs " + f(cur.bal);
+$("target").textContent = `Target Rs ${f(D.target)} by C1`;
+const onTrack = A.every(a=>a.bal>=0);
+$("status").textContent = end >= D.target ? "On track" : `Plan reaches ${Math.round(end/D.target*100)}% by C1`;
+requestAnimationFrame(()=>{ $("arc").style.strokeDashoffset = 515.2*(1-pct); });
+let k=0, goal=Math.round(pct*100); const t=setInterval(()=>{ $("pct").textContent=++k; if(k>=goal) clearInterval(t); },14);
+
+const days = Math.max(0,Math.round((new Date(D.deadline)-new Date(D.updated))/864e5));
+$("days").textContent = days;
+$("left").textContent = D.cycles.filter(x=>x.s==="p").length;
+$("gap").textContent = fk(Math.max(0,D.target-cur.bal));
+
+// timeline
+const tl=$("tl"); tl.style.setProperty("--n",N);
+D.cycles.forEach((x,i)=>{ const s=document.createElement("div");
+  s.className="s"+(x.s==="a"?" done":"")+(i===ci?" now":""); s.innerHTML=`<div class="dot"></div>${x.c}`; tl.appendChild(s); });
+$("tlbar").style.width="0";
+setTimeout(()=>{ $("tlbar").style.width=`calc(${ci/(N-1)} * (100% - 100%/${N}))`; },150);
+$("cycleNote").textContent = `${A.length} of ${N} complete`;
+
+// track E
+$("cells").innerHTML = D.trackE.map((s,i)=>`<div class="${s==='o'?'':s}">${i+1}</div>`).join("");
+const ready = D.trackE.filter(s=>s!=="o").length;
+$("eNote").textContent = `${ready} of ${D.trackE.length} covered`;
+setTimeout(()=>{ $("eMeter").style.width = ready/D.trackE.length*100+"%"; },150);
+
+// reserves
+const row = r => `<div class="row"><div class="l"><div class="code">${r.code}</div><div><div class="k">${r.k}</div><div class="d">${r.d}</div></div></div><div class="num">${f(r.v)}</div></div>`;
+$("reserves").innerHTML = D.reserves.map(row).join("");
+$("outlook").textContent = f(end + D.reserves.reduce((a,r)=>a+r.v,0));
+
+// log
+$("log").innerHTML = D.cycles.map(x=>`<div class="row"><div class="l"><div class="code">${x.c.replace(/29$/,"")}</div>
+  <div><div class="k num">+ ${f(x.add)}</div><div class="d">${x.date}</div></div></div>
+  <div style="display:flex;gap:12px;align-items:center"><span class="num">${f(x.bal)}</span><span class="tag ${x.s}">${x.s==="a"?"Actual":"Plan"}</span></div></div>`).join("");
+
+// positions
+$("pos").innerHTML = D.positions.map(row).join("");
+$("posDate").textContent = D.label;
+
+// chart
+function draw(){
+  const c=$("chart"), r=devicePixelRatio||1, W=c.clientWidth, H=c.clientHeight;
+  c.width=W*r; c.height=H*r; const x=c.getContext("2d"); x.scale(r,r);
+  const v=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const P={l:40,r:16,t:10,b:24}, lo=300000, hi=D.target+25000;
+  const X=i=>P.l+i/(N-1)*(W-P.l-P.r), Y=n=>P.t+(1-(n-lo)/(hi-lo))*(H-P.t-P.b);
+  x.font="11px -apple-system,BlinkMacSystemFont,sans-serif"; x.textBaseline="middle";
+  for(let n=lo;n<=hi;n+=50000){ x.fillStyle=v("--ink-3"); x.fillText(n/1000+"k",0,Y(n));
+    x.strokeStyle=v("--hair"); x.lineWidth=1; x.beginPath(); x.moveTo(P.l,Y(n)); x.lineTo(W-P.r,Y(n)); x.stroke(); }
+  x.textAlign="center"; D.cycles.forEach((q,i)=>{ x.fillStyle=v("--ink-3"); x.fillText(q.c,X(i),H-8); }); x.textAlign="left";
+  x.strokeStyle=v("--deep"); x.setLineDash([2,3]); x.lineWidth=1.5;
+  x.beginPath(); x.moveTo(P.l,Y(D.target)); x.lineTo(W-P.r,Y(D.target)); x.stroke();
+  x.strokeStyle=v("--ink-3"); x.setLineDash([4,4]); x.beginPath();
+  D.cycles.slice(ci).forEach((q,j)=>{ const i=ci+j; j?x.lineTo(X(i),Y(q.bal)):x.moveTo(X(i),Y(q.bal)); }); x.stroke();
+  x.setLineDash([]);
+  const g=x.createLinearGradient(0,P.t,0,H-P.b); g.addColorStop(0,v("--accent-soft")); g.addColorStop(1,"transparent");
+  x.beginPath(); A.forEach((q,i)=> i?x.lineTo(X(i),Y(q.bal)):x.moveTo(X(i),Y(q.bal)));
+  x.lineTo(X(ci),H-P.b); x.lineTo(X(0),H-P.b); x.closePath(); x.fillStyle=g; x.fill();
+  x.strokeStyle=v("--accent"); x.lineWidth=2.5; x.lineJoin="round"; x.beginPath();
+  A.forEach((q,i)=> i?x.lineTo(X(i),Y(q.bal)):x.moveTo(X(i),Y(q.bal))); x.stroke();
+  A.forEach((q,i)=>{ x.beginPath(); x.arc(X(i),Y(q.bal),4,0,7); x.fillStyle=v("--surface"); x.fill(); x.lineWidth=2; x.stroke(); });
+}
+draw(); addEventListener("resize",draw);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",draw);
+</script>
+</body>
+</html>
