@@ -139,6 +139,41 @@ body{min-height:100vh;color:var(--ink);overflow-x:hidden;
 .tag.p{box-shadow:inset 0 0 0 1px var(--ink-3);color:var(--ink-3)}
 .grid2{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
 
+/* daily check-in */
+#daily{box-shadow:0 0 0 1px rgba(127,180,255,.35),0 16px 40px rgba(61,123,255,.18)}
+.ci-date{color-scheme:dark;background:var(--night);color:var(--ink);border:0;border-radius:10px;padding:7px 10px;font:600 14px -apple-system,sans-serif;box-shadow:inset 0 0 0 1px var(--line)}
+.cap{border-radius:18px;padding:18px 16px;text-align:center;background:radial-gradient(400px 160px at 50% 0%,#2a62c9,transparent 70%),linear-gradient(160deg,#173f86,#0c1f3d);box-shadow:inset 0 0 0 1px rgba(127,180,255,.3)}
+.cap .k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ice);font-weight:700}
+.cap .big{font-family:Rubik,-apple-system,sans-serif;font-size:46px;font-weight:800;line-height:1.1;margin:4px 0 2px;letter-spacing:-.01em}
+.cap .rs{font-size:22px;color:var(--ice);font-weight:600}
+.verdict{display:inline-block;margin-top:10px;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;background:rgba(7,20,42,.5)}
+.verdict:empty{display:none}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.field{background:var(--night);border-radius:14px;padding:9px 12px;box-shadow:inset 0 0 0 1px var(--line);transition:box-shadow .2s}
+.field:focus-within{box-shadow:inset 0 0 0 2px var(--blue)}
+.field.main{grid-column:1/-1;background:linear-gradient(90deg,rgba(61,123,255,.18),var(--night))}
+.field label{display:block;font-size:11px;color:var(--ink-3);font-weight:600}
+.field input{width:100%;background:transparent;border:0;outline:none;color:var(--ink);font:700 18px Rubik,-apple-system,sans-serif;padding:2px 0 0}
+.field.main input{font-size:24px}
+.sub-h{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:16px 0 8px;display:flex;justify-content:space-between;align-items:center}
+.bills{display:flex;flex-wrap:wrap;gap:8px}
+.bill{border:0;cursor:pointer;font:600 13px -apple-system,sans-serif;padding:8px 12px;border-radius:999px;background:var(--night);color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line);transition:all .2s}
+.bill.paid{background:var(--blue);color:#fff;box-shadow:none}
+.bill.paid:before{content:"✓ "}
+.btn.wide{width:100%;margin-top:16px;padding:15px}
+.ok{color:#9cc4ff;font-size:12px;font-weight:600}
+.warn{color:var(--ice);font-size:12px;font-weight:700;background:rgba(207,227,255,.12);padding:2px 8px;border-radius:6px}
+.streak{font-family:Rubik,-apple-system,sans-serif;color:var(--ice);text-transform:none;letter-spacing:0;font-size:13px}
+.spark{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:110px}
+.spark .c{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;font-size:10px;color:var(--ink-3)}
+.spark .w{position:relative;width:100%;flex:1;display:flex;align-items:flex-end}
+.spark .lim{position:absolute;left:0;right:0;border-radius:6px;box-shadow:inset 0 0 0 1px #7fb4ff;opacity:.6}
+.spark .b{width:100%;border-radius:6px;background:#3d7bff;transition:height .8s cubic-bezier(.2,.8,.2,1)}
+.spark .b.over{background:#cfe3ff}
+.spark .e{height:100%;width:100%;border-radius:6px;background:repeating-linear-gradient(45deg,var(--night) 0 4px,transparent 4px 8px);opacity:.5}
+.tools{display:flex;gap:16px;margin-top:14px}
+.link{background:none;border:0;padding:0;color:var(--sky);font:600 13px -apple-system,sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
 /* install */
 .app{display:flex;align-items:center;gap:14px}
 .app img{width:58px;height:58px;border-radius:14px;flex:0 0 auto}
@@ -179,6 +214,38 @@ body{min-height:100vh;color:var(--ink);overflow-x:hidden;
   </div>
 
   <div class="stack" style="margin-top:14px">
+
+    <!-- DAILY CHECK-IN -->
+    <section class="panel" id="daily">
+      <div class="ph"><h2>Daily check-in</h2><input type="date" id="ciDate" class="ci-date" aria-label="Date"></div>
+
+      <div class="cap">
+        <div class="k" id="capLabel">Tomorrow you can spend</div>
+        <div class="big num"><span class="rs">Rs</span> <span id="capV">0</span></div>
+        <div class="muted" id="capSub"></div>
+        <div class="verdict" id="verdict"></div>
+      </div>
+
+      <div class="fields" id="fields"></div>
+
+      <div class="sub-h">Bills paid from Khalti this cycle</div>
+      <div class="bills" id="bills"></div>
+
+      <button class="btn wide" id="ciSave">Save tonight's balances</button>
+
+      <div class="sub-h" style="margin-top:18px">Account check</div>
+      <div id="checks"></div>
+
+      <div class="sub-h" style="margin-top:18px">Last 7 days <span id="streakTxt" class="streak"></span></div>
+      <div class="spark" id="spark"></div>
+      <div class="key"><span><i style="background:#3d7bff"></i>Under limit</span><span><i style="background:#cfe3ff"></i>Over limit</span><span><i style="background:transparent;box-shadow:inset 0 0 0 1px #7fb4ff"></i>Day's limit</span></div>
+
+      <div class="tools">
+        <button class="link" id="exp">Back up my log</button>
+        <label class="link">Restore backup<input type="file" id="imp" accept="application/json" hidden></label>
+      </div>
+      <p class="muted" style="font-size:11px;margin-top:6px">Your daily log is saved only on this phone. It is never uploaded. Back it up once in a while.</p>
+    </section>
 
     <!-- MOUNTAIN -->
     <section class="panel mtn">
@@ -363,6 +430,157 @@ function burst(x=innerWidth/2,y=innerHeight*.35,n=90){
 function countUp(el,to,fmt,ms=1500){if(reduce){el.textContent=fmt(to);return}const t0=performance.now();
   (function k(t){const p=Math.min((t-t0)/ms,1),e=1-Math.pow(1-p,3);el.textContent=fmt(to*e);if(p<1)requestAnimationFrame(k)})(t0)}
 
+/* ======================= DAILY CHECK-IN SETTINGS ======================= */
+const DAILY = {
+  paydays:["2026-11-13","2026-12-14","2027-01-13","2027-02-12","2027-03-13","2027-04-12"],
+  paydayNames:["Kartik 29","Mangsir 29","Poush 29","Magh 29","Falgun 29","Chaitra 29"],
+  cushion:500,                       // always keep this much in Khalti
+  khaltiBills:[                      // fixed costs that leave Khalti each cycle
+    {id:"niblsf", k:"NIBLSF SIP", v:1000},
+    {id:"elec",   k:"Electricity", v:1843},
+    {id:"top",    k:"Mobile top-ups", v:500}
+  ],
+  accounts:[                         // floor = lowest it should go before next payday
+    {id:"kh",  k:"Khalti",     ic:"👛", floor:null,   note:"Spending wallet", main:true},
+    {id:"nmb", k:"NMB Bank",   ic:"🏦", floor:7400,   note:"EMI, gym and internet reserve"},
+    {id:"san", k:"Sanima",     ic:"💍", floor:335266, note:"Marriage fund. Never spend."},
+    {id:"sid", k:"Siddhartha", ic:"🎓", floor:36000,  note:"Education fees only"},
+    {id:"mj",  k:"Manjushree", ic:"🪔", floor:null,   note:"Festival hedge"},
+    {id:"es",  k:"eSewa",      ic:"🤲", floor:null,   note:"Donation"}
+  ],
+  start:{kh:15656,nmb:18781,san:336266,sid:72433,mj:189,es:815}
+};
+/* ======================================================================== */
+
+const DAY=864e5;
+const pdt=s=>{const[a,b,c]=s.split("-").map(Number);return new Date(a,b-1,c)};
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const ddiff=(a,b)=>Math.round((pdt(b)-pdt(a))/DAY);
+const nice=s=>pdt(s).toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});
+const cycleOf=s=>{let i=0;DAILY.paydays.forEach((p,j)=>{if(pdt(p)<=pdt(s))i=j});return i};
+let LOG=store.get("daily-log",[]).sort((a,b)=>a.date<b.date?-1:1);
+const billsKey=c=>"kbills-"+DAILY.paydays[c];
+const paidBills=c=>store.get(billsKey(c),[]);
+const unpaidSum=c=>DAILY.khaltiBills.filter(b=>!paidBills(c).includes(b.id)).reduce((a,b)=>a+b.v,0);
+
+function allowance(dateStr,kh,unp){
+  const c=cycleOf(dateStr), nxt=DAILY.paydays[c+1];
+  const tomorrow=iso(new Date(pdt(dateStr).getTime()+DAY));
+  const days=Math.max(1,nxt?ddiff(tomorrow,nxt):1);
+  const free=kh-unp-DAILY.cushion;
+  return {c,days,free,daily:Math.max(0,Math.floor(free/days)),next:DAILY.paydayNames[c+1]||"next payday"};
+}
+// spending between two check-ins, ignoring fixed bills
+function pairs(){
+  const out=[];
+  for(let i=1;i<LOG.length;i++){const a=LOG[i-1],b=LOG[i];
+    if(cycleOf(a.date)!==cycleOf(b.date))continue;          // salary landed in between
+    const gap=Math.max(1,ddiff(a.date,b.date));
+    const spent=(a.b.kh-a.unpaid)-(b.b.kh-b.unpaid);
+    out.push({date:b.date,spent:Math.max(0,spent),added:spent<0?-spent:0,limit:a.allow*gap,under:spent<=a.allow*gap});
+  }
+  return out;
+}
+function streakNow(){const p=pairs();let s=0;for(let i=p.length-1;i>=0&&p[i].under;i--)s++;return s}
+function bestStreak(){let b=0,s=0;pairs().forEach(p=>{s=p.under?s+1:0;b=Math.max(b,s)});return b}
+const dailyXP=()=>LOG.length*10+pairs().filter(p=>p.under).length*15;
+
+const dateIn=$("ciDate");
+dateIn.value=iso(new Date());
+function entryFor(d){return LOG.find(e=>e.date===d)}
+function prefill(){
+  const d=dateIn.value, e=entryFor(d)||LOG.filter(x=>x.date<d).pop();
+  const vals=e?e.b:DAILY.start;
+  $("fields").innerHTML=DAILY.accounts.map(a=>`<div class="field ${a.main?"main":""}"><label for="f-${a.id}">${a.ic} ${a.k}</label>
+    <input id="f-${a.id}" type="text" inputmode="decimal" autocomplete="off" value="${f(vals[a.id]??0)}"></div>`).join("");
+  $("fields").querySelectorAll("input").forEach(inp=>{
+    inp.onfocus=()=>inp.select();
+    inp.onblur=()=>{const n=parseFloat(inp.value.replace(/[^0-9.]/g,""));inp.value=isNaN(n)?"0":f(n)};
+  });
+  paintBills();
+}
+function paintBills(){
+  const c=cycleOf(dateIn.value), paid=paidBills(c);
+  $("bills").innerHTML=DAILY.khaltiBills.map(b=>`<button class="bill ${paid.includes(b.id)?"paid":""}" data-id="${b.id}">${b.k} · ${f(b.v)}</button>`).join("");
+  $("bills").querySelectorAll(".bill").forEach(el=>el.onclick=()=>{
+    const id=el.dataset.id, now=paidBills(c);
+    store.set(billsKey(c),now.includes(id)?now.filter(x=>x!==id):[...now,id]);
+    beep(now.includes(id)?[440]:[660,880]);paintBills();paintDaily(true);
+  });
+}
+function readFields(){const o={};DAILY.accounts.forEach(a=>{const n=parseFloat($("f-"+a.id).value.replace(/[^0-9.]/g,""));o[a.id]=isNaN(n)?0:n});return o}
+
+function paintDaily(preview){
+  const last=LOG[LOG.length-1];
+  let date,b,unp;
+  if(preview||!last){date=dateIn.value;b=readFields();unp=unpaidSum(cycleOf(date))}
+  else{date=last.date;b=last.b;unp=last.unpaid}
+  const A2=allowance(date,b.kh,unp);
+  countUp($("capV"),A2.daily,n=>f(n),700);
+  $("capLabel").textContent=`${nice(iso(new Date(pdt(date).getTime()+DAY)))} you can spend`;
+  $("capSub").textContent=A2.free>0
+    ?`Rs ${f(A2.free)} free in Khalti ÷ ${A2.days} days until ${A2.next}`
+    :`Khalti is short by Rs ${f(-A2.free)} after bills. Spend nothing extra.`;
+  // verdict for the latest saved day
+  const p=pairs(), lp=p[p.length-1];
+  let v="";
+  if(!LOG.length) v="Enter tonight's balances and tap save.";
+  else if(lp&&lp.date===last.date){
+    v=lp.added?`Rs ${f(lp.added)} was added to Khalti`
+      :lp.under?`✓ Spent Rs ${f(lp.spent)} · ${f(lp.limit-lp.spent)} under the limit`
+      :`Spent Rs ${f(lp.spent)} · ${f(lp.spent-lp.limit)} over. Tomorrow's limit is lower.`;
+  } else v="First check-in saved. Tomorrow we compare.";
+  $("verdict").textContent=v;
+  // account checks
+  $("checks").innerHTML=DAILY.accounts.map(a=>{const val=b[a.id];let st;
+    if(a.id==="kh") st=`<span class="ok">Rs ${f(Math.max(0,A2.free))} free</span>`;
+    else if(a.floor==null) st=`<span class="ok">—</span>`;
+    else st=val>=a.floor?`<span class="ok">✓ On plan</span>`:`<span class="warn">Rs ${f(a.floor-val)} below plan</span>`;
+    return `<div class="row"><div class="l"><div class="ic">${a.ic}</div><div><b>${a.k}</b><div class="d">${a.note}</div></div></div>
+      <div style="text-align:right"><div class="v num">${f(val)}</div>${st}</div></div>`}).join("");
+  // last 7 days
+  const last7=p.slice(-7), mx=Math.max(1,...last7.map(x=>Math.max(x.spent,x.limit)));
+  const cells=[...Array(7-last7.length).fill(null),...last7];
+  $("spark").innerHTML=cells.map(x=>x?`<div class="c"><div class="w"><div class="lim" style="height:${x.limit/mx*100}%;bottom:0"></div>
+      <div class="b ${x.under?"":"over"}" style="height:${Math.max(3,x.spent/mx*100)}%"></div></div>${pdt(x.date).getDate()}</div>`
+    :`<div class="c"><div class="w"><div class="e"></div></div>·</div>`).join("");
+  const s=streakNow();
+  $("streakTxt").textContent=s?`🔥 ${s}-day streak`:"";
+}
+
+$("ciSave").onclick=()=>{
+  const date=dateIn.value, b=readFields(), c=cycleOf(date), unp=unpaidSum(c);
+  const a2=allowance(date,b.kh,unp);
+  const before=streakNow();
+  LOG=LOG.filter(e=>e.date!==date);
+  LOG.push({date,b,unpaid:unp,allow:a2.daily});
+  LOG.sort((x,y)=>x.date<y.date?-1:1);
+  store.set("daily-log",LOG);
+  paintDaily();paintHUD();paintBadges();
+  const p=pairs(), lp=p[p.length-1];
+  if(lp&&lp.date===date&&!lp.added){
+    if(lp.under){beep([523,659,784]);burst(innerWidth/2,innerHeight*.3,60);
+      toast(streakNow()>before?`Under budget! ${streakNow()}-day streak. +25 XP`:"Under budget! +25 XP")}
+    else{beep([330,262]);toast("Over today. Tomorrow's limit has been adjusted.")}
+  } else {beep([660,880]);toast("Saved. +10 XP")}
+};
+dateIn.onchange=()=>{prefill();paintDaily(true)};
+$("fields").addEventListener("input",()=>paintDaily(true));
+
+// backup & restore
+$("exp").onclick=()=>{
+  const bills={};DAILY.paydays.forEach((_,c)=>bills[billsKey(c)]=paidBills(c));
+  const blob=new Blob([JSON.stringify({log:LOG,bills},null,1)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`baisakh-log-${iso(new Date())}.json`;a.click();
+  toast("Backup downloaded.");
+};
+$("imp").onchange=e=>{const file=e.target.files[0];if(!file)return;
+  file.text().then(t=>{const d=JSON.parse(t);if(!Array.isArray(d.log))throw 0;
+    LOG=d.log.sort((a,b)=>a.date<b.date?-1:1);store.set("daily-log",LOG);
+    Object.entries(d.bills||{}).forEach(([k,v])=>store.set(k,v));
+    prefill();paintDaily();paintHUD();paintBadges();toast(`Restored ${LOG.length} days.`)})
+  .catch(()=>toast("That file is not a valid backup."))};
+
 /* ---------- quests & XP ---------- */
 const qKey="quests-"+D.updated;
 let qDone=store.get(qKey,[]);
@@ -370,7 +588,7 @@ const ranks=["Rookie","Trail Walker","Base Camper","Ridge Runner","Ice Climber",
 function xpState(){
   const bankXP=Math.floor(cur.bal/1000);                      // 1 XP per Rs 1,000 saved
   const qXP=D.quests.reduce((a,q,i)=>a+(qDone.includes(i)?q.xp:0),0);
-  const total=bankXP+qXP, per=40, lvl=Math.floor(total/per)+1;
+  const total=bankXP+qXP+dailyXP(), per=40, lvl=Math.floor(total/per)+1;
   return {total,lvl,inLvl:total%per,per,rank:ranks[Math.min(Math.floor((lvl-1)/2),ranks.length-1)]};
 }
 let lastLvl=null;
@@ -408,7 +626,7 @@ function paintBadges(){
     {i:"🏔️",n:"Summit",d:"Reach Rs 5,00,000.",ok:pct>=1},
     {i:"📜",n:"Quest master",d:"Finish every quest in one payday.",ok:qDone.length===D.quests.length},
     {i:"🔥",n:"Hot streak",d:"Three paydays in a row on plan.",ok:A.length>=3},
-    {i:"🧘",n:"Iron will",d:"Keep Khalti under budget for a month.",ok:qDone.includes(6)},
+    {i:"🧘",n:"Iron will",d:"Stay under the daily limit 7 days in a row.",ok:bestStreak()>=7},
     {i:"💎",n:"Beyond summit",d:"Reach Rs 6,00,000 including power-ups.",ok:false},
     {i:"💍",n:"Baisakh",d:"The big day. Final badge.",ok:false}
   ];
@@ -484,6 +702,7 @@ $("invDate").textContent=D.updatedBS;
 $("log").innerHTML=P.map((p,i)=>`<div class="row"><div class="l"><div class="ic" style="font-family:Rubik,-apple-system,sans-serif;font-size:14px;font-weight:700">${i+1}</div>
   <div><b>${p.bs}</b><span class="tag ${p.s}">${p.s==="a"?"Reached":"Plan"}</span><div class="d num">+ ${f(p.add)}</div></div></div><span class="v num">${f(p.bal)}</span></div>`).join("");
 
+prefill();paintDaily(!LOG.length);
 paintQuests();paintBadges();paintHUD();
 
 // celebrate once per new check-in
