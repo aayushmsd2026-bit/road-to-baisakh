@@ -1,5 +1,5 @@
 // Network first, so each payday update shows right away. Falls back to cache when offline.
-const CACHE = "baisakh-v6";
+const CACHE = "baisakh-v7";
 const FILES = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", e => {
