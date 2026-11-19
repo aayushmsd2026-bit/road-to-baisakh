@@ -123,6 +123,8 @@ body{background:var(--paper);color:var(--ink);font:15px/1.5 var(--sans);overflow
 .bills{display:flex;flex-wrap:wrap;gap:6px}
 .bill{border:1px solid var(--ink);background:transparent;color:var(--ink);font:500 13px var(--sans);padding:7px 11px;border-radius:2px;cursor:pointer;transition:all .15s}
 .bill .num{font-size:12px;color:var(--ink-2);margin-left:6px}
+.bill .src{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-left:6px}
+.bill.paid .src{color:var(--sky)}
 .bill.paid{background:var(--ink);color:var(--paper)}
 .bill.paid .num{color:var(--sky)}
 .btn{appearance:none;border:0;background:var(--ink);color:var(--paper);font:600 15px var(--sans);padding:15px 18px;border-radius:2px;cursor:pointer;width:100%;margin-top:16px;letter-spacing:.01em;transition:transform .12s,background .2s}
@@ -336,7 +338,7 @@ canvas{display:block;width:100%;height:230px}
       <div class="sheet d2">
         <div class="label">Tonight's balances</div>
         <div class="fields" id="fields"></div>
-        <div class="subh">Bills paid from Khalti this cycle</div>
+        <div class="subh">Bills this cycle · tap when paid</div>
         <div class="bills" id="bills"></div>
         <button class="btn" id="ciSave">Save tonight's balances</button>
         <div class="sync">
@@ -419,41 +421,43 @@ canvas{display:block;width:100%;height:230px}
 <script>
 /* ======================= DATA — updated every payday ======================= */
 const D = {
-  updated:"2026-11-13", updatedBS:"Kartik 29, 2083",
+  updated:"2026-11-19", updatedBS:"19 Nov reset",
   goal:500000, deadline:"2027-03-15", deadlineBS:"Chaitra week 1",
   paydays:[
     {bs:"Asoj 29",   add:149543, bal:327697, s:"a"},
     {bs:"Kartik 29", add:23970,  bal:336266, s:"a"},
-    {bs:"Mangsir 29",add:25325,  bal:361591, s:"p"},
-    {bs:"Poush 29",  add:27449,  bal:389040, s:"p"},
-    {bs:"Magh 29",   add:15449,  bal:404489, s:"p"},
-    {bs:"Falgun 29", add:15449,  bal:419938, s:"p"}
+    {bs:"Nov 19 reset", add:-16523, bal:320742, s:"a", note:"Credit card, bills and Khalti top-up"},
+    {bs:"Mangsir 29",add:17752,  bal:338494, s:"p"},
+    {bs:"Poush 29",  add:26249,  bal:364743, s:"p"},
+    {bs:"Magh 29",   add:14249,  bal:378992, s:"p"},
+    {bs:"Falgun 29", add:14249,  bal:393241, s:"p"}
   ],
   quests:[
-    {t:"Send Rs 24,970 to Sanima", d:"Marriage 23,970 + NI31 1,000"},
-    {t:"Send Rs 15,600 to Khalti", d:"Living 14,600 + NIBLSF 1,000"},
-    {t:"Send Rs 630 to eSewa", d:"1% donation"},
-    {t:"Pay Rs 36,000 education fee", d:"From Siddhartha"},
-    {t:"Set NI31 and NIBLSF to Rs 1,000", d:"Change the SIP amounts"},
-    {t:"Stop NFCF, NICADF, KSLY and RD", d:"Pause until after the wedding"},
-    {t:"Keep Khalti under Rs 14,600", d:"Sweep leftovers to Sanima before payday"}
+    {t:"Move Rs 13,000 from Sanima to NMB", d:"For the credit card"},
+    {t:"Pay the credit card Rs 18,000 in full", d:"From NMB, before the due date"},
+    {t:"Move Rs 2,158 from Sanima to eSewa", d:"eSewa becomes 2,343 for bills"},
+    {t:"Move Rs 1,365 from Sanima to Khalti", d:"Khalti becomes 9,000 for spending"},
+    {t:"Pay electricity Rs 1,843 from eSewa", d:"On Saturday, code BRIGHT2 for 2% back"},
+    {t:"Pay mobile top-ups Rs 500 from eSewa", d:"Use data packs for 10% back on Saturday"},
+    {t:"Stop NI31 and NIBLSF SIPs", d:"All mutual funds paused until the bonus"},
+    {t:"Save a check-in every night", d:"Keep Khalti under the daily limit"}
   ],
   education:[ // d paid · f money ready · o to save
-    {due:"Nov 26",s:"f"},{due:"Feb 27",s:"f"},{due:"May 27",s:"o"},{due:"Aug 27",s:"o"},
+    {due:"Nov 26",s:"d"},{due:"Feb 27",s:"f"},{due:"May 27",s:"o"},{due:"Aug 27",s:"o"},
     {due:"Nov 27",s:"o"},{due:"Feb 28",s:"o"},{due:"May 28",s:"o"}
   ],
   reserves:[
     {k:"Recurring deposit", d:"Paused · 14 of 36 done", v:42000, c:"--lilac"},
     {k:"Final bonus", d:"Arrives in Baisakh", v:56000, c:"--ochre"},
-    {k:"Chaitra salary", d:"After the deadline", v:15449, c:"--celadon"}
+    {k:"Chaitra salary", d:"After the deadline", v:14249, c:"--celadon"}
   ],
   accounts:[
-    {k:"NMB Bank", d:"Salary", v:18781, c:"--indigo", a:"NM"},
-    {k:"Sanima", d:"Marriage fund", v:336266, c:"--cobalt", a:"SA"},
-    {k:"Siddhartha", d:"Education", v:72433, c:"--celadon", a:"SI"},
-    {k:"Khalti", d:"Daily spending", v:15656, c:"--ochre", a:"KH"},
+    {k:"NMB Bank", d:"Salary, EMI, gym, internet, card", v:2443, c:"--indigo", a:"NM"},
+    {k:"Sanima", d:"Marriage fund", v:320742, c:"--cobalt", a:"SA"},
+    {k:"Siddhartha", d:"Education", v:36433, c:"--celadon", a:"SI"},
+    {k:"Khalti", d:"Spending only", v:9000, c:"--ochre", a:"KH"},
     {k:"Manjushree", d:"Festival hedge", v:189, c:"--salmon", a:"MJ"},
-    {k:"eSewa", d:"Donation", v:815, c:"--olive", a:"ES"}
+    {k:"eSewa", d:"Bills and donation", v:2343, c:"--olive", a:"ES"}
   ]
 };
 
@@ -462,20 +466,26 @@ const DAILY = {
   paydays:["2026-11-13","2026-12-14","2027-01-13","2027-02-12","2027-03-13","2027-04-12"],
   paydayNames:["Kartik 29","Mangsir 29","Poush 29","Magh 29","Falgun 29","Chaitra 29"],
   cushion:500,
-  khaltiBills:[
-    {id:"niblsf", k:"NIBLSF SIP", v:1000},
-    {id:"elec",   k:"Electricity", v:1843},
-    {id:"top",    k:"Mobile top-ups", v:500}
+  // Bills for each payday cycle. "from" = the account that pays it.
+  // cycles = which cycles it is due in (0 = Kartik 29 cycle, 1 = Mangsir 29, ...). Omit for every cycle.
+  bills:[
+    {id:"elec",   k:"Electricity",     v:1843,  from:"es"},
+    {id:"top",    k:"Mobile top-ups",  v:500,   from:"es"},
+    {id:"don",    k:"Donation 1%",     v:630,   from:"es",  cycles:[1,2,3,4,5]},
+    {id:"cc",     k:"Credit card",     v:18000, from:"nmb", cycles:[0]},
+    {id:"claude", k:"Claude",          v:3200,  from:"nmb", cycles:[1,2,3,4,5]},
+    {id:"gym",    k:"Gym",             v:8000,  from:"nmb", cycles:[1,4]},
+    {id:"net",    k:"Internet",        v:4746,  from:"nmb", cycles:[1,4]}
   ],
   accounts:[
-    {id:"kh",  k:"Khalti",     c:"--ochre",   floor:null,   note:"Spending wallet", main:true},
-    {id:"nmb", k:"NMB Bank",   c:"--indigo",  floor:7400,   note:"EMI, gym and internet reserve"},
-    {id:"san", k:"Sanima",     c:"--cobalt",  floor:335266, note:"Marriage fund. Never spend."},
+    {id:"kh",  k:"Khalti",     c:"--ochre",   floor:null,   note:"Spending only", main:true},
+    {id:"nmb", k:"NMB Bank",   c:"--indigo",  floor:"bills",note:"EMI, gym, internet, card"},
+    {id:"san", k:"Sanima",     c:"--cobalt",  floor:320742, note:"Marriage fund. Never spend."},
     {id:"sid", k:"Siddhartha", c:"--celadon", floor:36000,  note:"Education fees only"},
     {id:"mj",  k:"Manjushree", c:"--salmon",  floor:null,   note:"Festival hedge"},
-    {id:"es",  k:"eSewa",      c:"--olive",   floor:null,   note:"Donation"}
+    {id:"es",  k:"eSewa",      c:"--olive",   floor:"bills",note:"Bills and donation only"}
   ],
-  start:{kh:15656,nmb:18781,san:336266,sid:72433,mj:189,es:815}
+  start:{kh:9000,nmb:2443,san:320742,sid:36433,mj:189,es:2343}
 };
 
 /* ======================= SYNC SETTINGS (Firebase) =======================
@@ -522,12 +532,15 @@ $("left").textContent=P.filter(p=>p.s==="p").length;
 $("gap").textContent=fk(Math.max(0,D.goal-cur.bal));
 // composition: opening balance, then each payday's real change, then the plan
 (function(){
-  const segs=[{k:"Opening",v:P[0].bal-P[0].add,c:"--sky",plan:false}];
-  P.forEach((p,i)=>{const prev=i?P[i-1].bal:P[0].bal-P[0].add;
-    segs.push({k:p.bs,v:Math.max(0,p.bal-prev),c:PALETTE[i%PALETTE.length],plan:p.s==="p"})});
+  const segs=[{k:"Earlier savings",v:P[0].bal-P[0].add,c:"--sky",plan:false}];
+  let withdrawn=0;
+  P.forEach((p,i)=>{const prev=i?P[i-1].bal:P[0].bal-P[0].add, d=p.bal-prev;
+    if(d<0){withdrawn+=-d;return}
+    segs.push({k:p.bs,v:d,c:PALETTE[i%PALETTE.length],plan:p.s==="p"})});
+  segs[0].v-=withdrawn;   // money taken out comes off the oldest savings so the bar matches the real balance
   $("comp").innerHTML=segs.map(s=>`<i class="${s.plan?"plan":""}" data-w="${s.v/D.goal*100}" style="background:var(${s.c})"></i>`).join("");
   setTimeout(()=>document.querySelectorAll("#comp i").forEach(i=>i.style.width=Math.min(+i.dataset.w,100)+"%"),150);
-  $("legend").innerHTML=segs.filter(s=>!s.plan).map(s=>`<span><b style="background:var(${s.c})"></b>${s.k} ${fk(s.v)}</span>`).join("")
+  $("legend").innerHTML=segs.filter(s=>!s.plan&&s.v>0).map(s=>`<span><b style="background:var(${s.c})"></b>${s.k} ${fk(s.v)}</span>`).join("")
     +`<span><b style="background:repeating-linear-gradient(-45deg,#c8d3ea 0 2px,transparent 2px 4px)"></b>Plan and gap</span>`;
 })();
 
@@ -551,7 +564,10 @@ const cycleOf=s=>{let i=0;DAILY.paydays.forEach((p,j)=>{if(pdt(p)<=pdt(s))i=j});
 let LOG=store.get("daily-log",[]).sort((a,b)=>a.date<b.date?-1:1);
 const billsKey=c=>"kbills-"+DAILY.paydays[c];
 const paidBills=c=>store.get(billsKey(c),[]);
-const unpaidSum=c=>DAILY.khaltiBills.filter(b=>!paidBills(c).includes(b.id)).reduce((a,b)=>a+b.v,0);
+const billsFor=c=>DAILY.bills.filter(b=>!b.cycles||b.cycles.includes(c));
+const unpaidFrom=(c,acc)=>billsFor(c).filter(b=>b.from===acc&&!paidBills(c).includes(b.id)).reduce((a,b)=>a+b.v,0);
+const unpaidSum=c=>unpaidFrom(c,"kh");   // only bills paid from Khalti reduce the spending limit
+const SRC={kh:"Khalti",es:"eSewa",nmb:"NMB"};
 
 function allowance(dateStr,kh,unp){
   const c=cycleOf(dateStr), nxt=DAILY.paydays[c+1];
@@ -587,7 +603,7 @@ function prefill(){
 }
 function paintBills(){
   const c=cycleOf(dateIn.value), paid=paidBills(c);
-  $("bills").innerHTML=DAILY.khaltiBills.map(b=>`<button class="bill ${paid.includes(b.id)?"paid":""}" data-id="${b.id}">${b.k}<span class="num">${f(b.v)}</span></button>`).join("");
+  $("bills").innerHTML=billsFor(c).map(b=>`<button class="bill ${paid.includes(b.id)?"paid":""}" data-id="${b.id}">${b.k}<span class="src">${SRC[b.from]}</span><span class="num">${f(b.v)}</span></button>`).join("");
   $("bills").querySelectorAll(".bill").forEach(el=>el.onclick=()=>{
     const id=el.dataset.id, now=paidBills(c);
     store.set(billsKey(c),now.includes(id)?now.filter(x=>x!==id):[...now,id]);
@@ -619,6 +635,8 @@ function paintDaily(preview){
   $("checks").innerHTML=DAILY.accounts.map(a=>{const val=b[a.id];let st;
     if(a.id==="kh") st=`<span class="ok">Rs ${f(Math.max(0,A2.free))} free</span>`;
     else if(a.floor==null) st="";
+    else if(a.floor==="bills"){const due=unpaidFrom(cycleOf(date),a.id);
+      st=!due?`<span class="ok">No bills due</span>`:val>=due?`<span class="ok">Covers ${f(due)} in bills</span>`:`<span class="warn">Rs ${f(due-val)} short for bills</span>`}
     else st=val>=a.floor?`<span class="ok">On plan</span>`:`<span class="warn">Rs ${f(a.floor-val)} below plan</span>`;
     return `<div class="row"><div class="l"><span class="sw" style="background:var(${a.c});height:30px"></span><div><div class="k">${a.k}</div><div class="d">${a.note}</div></div></div>
       <div class="v">${f(val)}<div>${st}</div></div></div>`}).join("");
@@ -682,7 +700,7 @@ const lrow=(sw,k,d,v,extra="")=>`<div class="row"><div class="l">${sw}<div><div 
 $("reserves").innerHTML=D.reserves.map(r=>lrow(`<span class="sw" style="background:var(${r.c});height:30px"></span>`,r.k,r.d,f(r.v))).join("");
 $("outlook").textContent="Rs "+f(P[N-1].bal+D.reserves.reduce((a,b)=>a+b.v,0));
 $("log").innerHTML=P.map((p,i)=>lrow(`<span class="sqr" style="background:var(${PALETTE[i%PALETTE.length]})">${String(i+1).padStart(2,"0")}</span>`,
-  p.bs,`+ ${f(p.add)} to marriage fund`,f(p.bal),`<span class="tag ${p.s}">${p.s==="a"?"Actual":"Plan"}</span>`)).join("");
+  p.bs,p.add<0?`− ${f(-p.add)} · ${p.note||"withdrawn"}`:`+ ${f(p.add)} to marriage fund`,f(p.bal),`<span class="tag ${p.s}">${p.s==="a"?"Actual":"Plan"}</span>`)).join("");
 $("accounts").innerHTML=D.accounts.map(a=>lrow(`<span class="sqr" style="background:var(${a.c})">${a.a}</span>`,a.k,a.d,f(a.v))).join("");
 $("accDate").textContent=D.updatedBS;
 
@@ -695,7 +713,7 @@ function draw(){
   x.font=`${small?10:11}px "IBM Plex Mono",monospace`;x.textBaseline="middle";
   for(let n=lo;n<=hi;n+=50000){x.fillStyle=css("--ink-3");x.fillText(n/1000+"k",0,Y(n));
     x.strokeStyle=css("--rule-2");x.lineWidth=1;x.beginPath();x.moveTo(pd.l,Y(n));x.lineTo(W-pd.r,Y(n));x.stroke()}
-  x.textAlign="center";P.forEach((q,i)=>{x.fillStyle=css("--ink-3");x.fillText(q.bs.slice(0,3),X(i),H-8)});x.textAlign="left";
+  x.textAlign="center";P.forEach((q,i)=>{x.fillStyle=css("--ink-3");x.fillText(q.bs.includes("reset")?"19N":q.bs.slice(0,3),X(i),H-8)});x.textAlign="left";
   // goal band
   x.fillStyle=css("--ochre");x.fillRect(pd.l,Y(D.goal)-1.5,W-pd.l-pd.r,3);
   // plan
