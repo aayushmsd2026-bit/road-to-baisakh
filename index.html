@@ -202,6 +202,88 @@ canvas{display:block;width:100%;height:230px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translate(-50%,24px);opacity:0;z-index:20;
   background:var(--ink);color:var(--paper);font-size:14px;padding:12px 16px;border-radius:2px;max-width:calc(100% - 32px);text-align:center;transition:all .3s cubic-bezier(.2,.8,.2,1);border-left:4px solid var(--ochre)}
 .toast.show{transform:translate(-50%,0);opacity:1}
+
+/* ---------- wider screens ---------- */
+.d1 .verdict{margin-bottom:12px}
+.esum{margin-top:14px;border-top:1px solid var(--rule)}
+.esum .row{padding:9px 0}
+.esum .k{font-size:13px;color:var(--ink-2);font-weight:400}
+.d3{margin-top:12px}
+@media (min-width:760px){
+  .wrap{max-width:1000px;padding-left:28px;padding-right:28px}
+  .dash{display:grid;grid-template-columns:1fr 1fr;gap:34px 28px;
+    grid-template-areas:"hero hero" "ms ms" "daily daily" "traj traj" "quest edu" "quest res" "log acc" "app app";align-items:start}
+  .dash>.sec{margin-top:0}
+  .a-hero{grid-area:hero}.a-ms{grid-area:ms}.a-daily{grid-area:daily}.a-traj{grid-area:traj}.a-quest{grid-area:quest}
+  .a-edu{grid-area:edu}.a-res{grid-area:res}.a-log{grid-area:log}.a-acc{grid-area:acc}.a-app{grid-area:app}
+  .dgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;grid-template-areas:"d1 d1" "d2 d3"}
+  .d1{grid-area:d1}.d2{grid-area:d2}.d3{grid-area:d3;margin-top:0}
+  .d1 .verdict{margin-bottom:0}
+  .hero{padding:36px 32px 28px}
+  .hero:before{width:280px;height:280px;right:-80px;top:-120px}
+  .hero:after{width:110px;height:110px;right:90px;top:-30px}
+  .pct{right:30px!important;top:26px!important;font-size:56px}
+  canvas{height:280px}
+}
+@media (min-width:1100px){
+  .wrap{max-width:1320px;padding-left:40px;padding-right:40px}
+  .mast .w{font-size:30px}
+  .dash{grid-template-columns:repeat(12,minmax(0,1fr));gap:40px 28px;
+    grid-template-areas:
+      "hero hero hero hero hero hero hero hero ms ms ms ms"
+      "daily daily daily daily daily daily daily daily daily daily daily daily"
+      "traj traj traj traj traj traj traj traj quest quest quest quest"
+      "edu edu edu edu res res res res acc acc acc acc"
+      "log log log log log log log log app app app app";
+    align-items:stretch}
+  /* hero */
+  .hero{padding:44px 40px 32px;display:flex;flex-direction:column}
+  .hero .big{font-size:112px;margin-top:18px}
+  .hero .of{font-size:15px}
+  .hero .comp{height:26px;margin-top:auto}
+  .hero .stats b{font-size:36px}
+  .hero:before{width:360px;height:360px;right:-90px;top:-150px}
+  .hero:after{width:140px;height:140px;right:150px;top:-40px}
+  .pct{font-size:72px;right:44px!important;top:34px!important}
+  .pct small{font-size:28px}
+  /* milestones as a tall column next to the hero */
+  .a-ms{display:flex;flex-direction:column}
+  .ms{flex:1;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:6px}
+  .ms div{height:auto;min-height:96px;padding:14px}
+  .ms b{font-size:40px}
+  .ms small{font-size:11px;letter-spacing:.08em}
+  /* daily check-in in three columns */
+  .dgrid{grid-template-columns:1fr 1.25fr 1.15fr;grid-template-areas:"d1 d2 d3";align-items:stretch;gap:20px}
+  .d1{display:flex;flex-direction:column;gap:12px}
+  .d1 .cap{flex:1;grid-template-columns:1fr;align-content:space-between;padding:24px}
+  .d1 .cap .amt{font-size:104px}
+  .d1 .cap .streak{text-align:left;border-top:1px solid rgba(22,33,62,.25);padding-top:14px}
+  .d1 .verdict{margin-top:0}
+  /* side-by-side sections stretch to equal height */
+  .a-traj,.a-quest,.a-edu,.a-res,.a-acc,.a-log,.a-app{display:flex;flex-direction:column}
+  .a-traj>.sheet,.a-quest>.sheet,.a-edu>.sheet,.a-res>.sheet,.a-acc>.sheet,.a-log>.sheet{flex:1}
+  .a-traj>.sheet{display:flex;flex-direction:column}
+  .a-traj canvas{flex:1;min-height:300px;height:auto}
+  .a-edu .tile{aspect-ratio:auto;height:120px}
+  .a-edu>.sheet{display:flex;flex-direction:column}
+  .a-edu .esum{margin-top:auto;padding-top:6px}
+  .d1 .cap:after{left:auto;bottom:auto;right:-60px;top:-60px;width:180px;height:180px}
+  .hero .of{margin-bottom:28px}
+  .tiles{gap:6px}
+  .tile b{font-size:24px}
+  /* install as a tall card */
+  .a-app .app{flex:1;flex-direction:column;align-items:flex-start;justify-content:space-between;padding:24px;gap:18px}
+  .a-app .app img{width:64px;height:64px}
+  .a-app .app h3{font-size:30px}
+  .a-app .app .btn{width:100%}
+  .a-app{padding-top:58px}
+  /* hover affordances for mouse users */
+  .check:hover .box{background:var(--celadon-l)}
+  .bill:hover{background:var(--ochre-l)}
+  .bill.paid:hover{background:var(--indigo)}
+  .ms div:hover{transform:translateY(-2px)}
+  .btn:hover{background:var(--indigo)}
+}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -213,8 +295,9 @@ canvas{display:block;width:100%;height:230px}
   </header>
   <div class="dateline"><span id="dl1"></span><span id="dl2"></span></div>
 
+  <div class="dash">
   <!-- HERO -->
-  <section class="hero">
+  <section class="hero a-hero">
     <div class="pct"><span id="pctV">0</span><small>%</small></div>
     <div class="label">Marriage fund · Sanima</div>
     <div class="big"><small>Rs</small><span class="num" style="font-family:var(--serif)" id="fund">0</span></div>
@@ -229,51 +312,55 @@ canvas{display:block;width:100%;height:230px}
   </section>
 
   <!-- MILESTONES -->
-  <section class="sec">
+  <section class="sec a-ms">
     <div class="sh"><span class="n">01</span><h2>Milestones</h2><span class="aside" id="msNote"></span></div>
     <div class="ms" id="ms"></div>
   </section>
 
   <!-- DAILY -->
-  <section class="sec" id="daily">
+  <section class="sec a-daily" id="daily">
     <div class="sh"><span class="n">02</span><h2>Daily check-in</h2><span class="aside"><input type="date" id="ciDate" class="ci-date" aria-label="Date"></span></div>
-    <div class="cap">
-      <div>
-        <div class="label" id="capLabel">Tomorrow you can spend</div>
-        <div class="amt"><small>Rs</small><span id="capV">0</span></div>
-        <div class="sub" id="capSub"></div>
+    <div class="dgrid">
+      <div class="d1">
+        <div class="cap">
+          <div>
+            <div class="label" id="capLabel">Tomorrow you can spend</div>
+            <div class="amt"><small>Rs</small><span id="capV">0</span></div>
+            <div class="sub" id="capSub"></div>
+          </div>
+          <div class="streak"><b id="streakV">0</b><span>Day streak</span></div>
+        </div>
+        <div class="verdict" id="verdict"></div>
       </div>
-      <div class="streak"><b id="streakV">0</b><span>Day streak</span></div>
-    </div>
-    <div class="verdict" id="verdict"></div>
 
-    <div class="sheet" style="margin-top:12px">
-      <div class="label">Tonight's balances</div>
-      <div class="fields" id="fields"></div>
-      <div class="subh">Bills paid from Khalti this cycle</div>
-      <div class="bills" id="bills"></div>
-      <button class="btn" id="ciSave">Save tonight's balances</button>
-
-      <div class="subh" style="margin-top:22px">Account check</div>
-      <div class="ledger" id="checks"></div>
-
-      <div class="subh" style="margin-top:22px">Last seven days</div>
-      <div class="bars" id="bars"></div>
-      <div class="key"><span><b style="background:var(--cobalt)"></b>Under limit</span><span><b style="background:var(--vermilion)"></b>Over limit</span><span><b style="border-top:1.5px dashed var(--ink);height:0;width:14px"></b>Day's limit</span></div>
-
-      <div class="sync">
-        <div class="sync-top"><span class="dotst" id="syncDot"></span><div><b id="syncTitle">Sync</b><div class="d" id="syncSub"></div></div></div>
-        <div id="syncActions"></div>
+      <div class="sheet d2">
+        <div class="label">Tonight's balances</div>
+        <div class="fields" id="fields"></div>
+        <div class="subh">Bills paid from Khalti this cycle</div>
+        <div class="bills" id="bills"></div>
+        <button class="btn" id="ciSave">Save tonight's balances</button>
+        <div class="sync">
+          <div class="sync-top"><span class="dotst" id="syncDot"></span><div><b id="syncTitle">Sync</b><div class="d" id="syncSub"></div></div></div>
+          <div id="syncActions"></div>
+        </div>
+        <div class="links">
+          <button class="link" id="exp">Back up log</button>
+          <label class="link">Restore backup<input type="file" id="imp" accept="application/json" hidden></label>
+        </div>
       </div>
-      <div class="links">
-        <button class="link" id="exp">Back up log</button>
-        <label class="link">Restore backup<input type="file" id="imp" accept="application/json" hidden></label>
+
+      <div class="sheet d3">
+        <div class="label">Account check</div>
+        <div class="ledger" id="checks" style="margin-top:6px"></div>
+        <div class="subh" style="margin-top:22px">Last seven days</div>
+        <div class="bars" id="bars"></div>
+        <div class="key"><span><b style="background:var(--cobalt)"></b>Under limit</span><span><b style="background:var(--vermilion)"></b>Over limit</span><span><b style="border-top:1.5px dashed var(--ink);height:0;width:14px"></b>Day's limit</span></div>
       </div>
     </div>
   </section>
 
   <!-- TRAJECTORY -->
-  <section class="sec">
+  <section class="sec a-traj">
     <div class="sh"><span class="n">03</span><h2>Trajectory</h2><span class="aside">Actual against plan</span></div>
     <div class="sheet"><canvas id="chart"></canvas>
       <div class="key"><span><b style="background:var(--cobalt)"></b>Actual</span><span><b style="border-top:1.5px dashed var(--ink-3);height:0;width:14px"></b>Plan</span><span><b style="background:var(--ochre)"></b>Goal 5,00,000</span></div>
@@ -281,46 +368,49 @@ canvas{display:block;width:100%;height:230px}
   </section>
 
   <!-- CHECKLIST -->
-  <section class="sec">
+  <section class="sec a-quest">
     <div class="sh"><span class="n">04</span><h2>This payday</h2><span class="aside" id="qNote"></span></div>
     <div class="sheet"><div class="progress"><i id="qBar"></i></div><div id="quests"></div></div>
   </section>
 
-  <div class="grid2" style="margin-top:34px">
-    <section class="sec">
-      <div class="sh"><span class="n">05</span><h2>Education</h2><span class="aside" id="eNote"></span></div>
+  <section class="sec a-edu">
+    <div class="sh"><span class="n">05</span><h2>Education</h2><span class="aside" id="eNote"></span></div>
+    <div class="sheet">
       <div class="tiles" id="tiles"></div>
       <div class="key"><span><b style="background:var(--indigo)"></b>Paid</span><span><b style="background:var(--celadon)"></b>Money ready</span><span><b style="box-shadow:inset 0 0 0 1px var(--rule);background:var(--rule-2)"></b>To save</span></div>
-    </section>
-    <section class="sec">
-      <div class="sh"><span class="n">06</span><h2>Reserves</h2><span class="aside">Not yet counted</span></div>
-      <div class="sheet ledger"><div id="reserves"></div>
-        <div class="row" style="border-top:1.5px solid var(--ink);border-bottom:0;margin-top:4px"><span class="k">Total by the wedding</span><span class="v" id="outlook"></span></div>
-      </div>
-    </section>
-  </div>
+      <div class="ledger esum" id="eSum"></div>
+    </div>
+  </section>
+
+  <section class="sec a-res">
+    <div class="sh"><span class="n">06</span><h2>Reserves</h2><span class="aside">Not yet counted</span></div>
+    <div class="sheet ledger"><div id="reserves"></div>
+      <div class="row" style="border-top:1.5px solid var(--ink);border-bottom:0;margin-top:4px"><span class="k">Total by the wedding</span><span class="v" id="outlook"></span></div>
+    </div>
+  </section>
 
   <!-- LOG -->
-  <section class="sec">
+  <section class="sec a-log">
     <div class="sh"><span class="n">07</span><h2>Payday log</h2><span class="aside">Marriage fund balance</span></div>
     <div class="sheet ledger" id="log"></div>
   </section>
 
   <!-- ACCOUNTS -->
-  <section class="sec">
+  <section class="sec a-acc">
     <div class="sh"><span class="n">08</span><h2>Accounts</h2><span class="aside" id="accDate"></span></div>
     <div class="sheet ledger" id="accounts"></div>
   </section>
 
   <!-- INSTALL -->
-  <section class="sec">
+  <section class="sec a-app">
     <div class="app">
       <img src="icon-192.png" alt="">
-      <div class="t"><h3>Get the app</h3><p id="appSub">Install on your phone. Opens full screen and works offline.</p></div>
+      <div class="t"><h3>Get the app</h3><p id="appSub">Install on your phone or laptop. Opens in its own window and works offline.</p></div>
       <button class="btn" id="installBtn">Install</button>
     </div>
     <div class="howto" id="howto"></div>
   </section>
+  </div>
 
   <footer class="colophon"><span>Updated every payday</span><span>Amounts in NPR</span></footer>
 </main>
@@ -585,6 +675,9 @@ function paintQuests(){
 /* ---------- education, reserves, log, accounts ---------- */
 $("tiles").innerHTML=D.education.map((e,i)=>`<div class="tile ${e.s==="o"?"":e.s}"><b>${i+1}</b>${e.due}</div>`).join("");
 $("eNote").textContent=`${D.education.filter(e=>e.s!=="o").length} of ${D.education.length} covered`;
+(function(){const FEE=36000,open=D.education.filter(e=>e.s==="o"),next=D.education.find(e=>e.s!=="d");
+  const r=(k,v)=>`<div class="row"><span class="k">${k}</span><span class="v">${v}</span></div>`;
+  $("eSum").innerHTML=r("Next fee",next?`${next.due} · ${f(FEE)}`:"All paid")+r("Fees still to save",f(open.length*FEE))+r("Monthly saving from Magh",f(12000));})();
 const lrow=(sw,k,d,v,extra="")=>`<div class="row"><div class="l">${sw}<div><div class="k">${k}${extra}</div><div class="d">${d}</div></div></div><div class="v">${v}</div></div>`;
 $("reserves").innerHTML=D.reserves.map(r=>lrow(`<span class="sw" style="background:var(${r.c});height:30px"></span>`,r.k,r.d,f(r.v))).join("");
 $("outlook").textContent="Rs "+f(P[N-1].bal+D.reserves.reduce((a,b)=>a+b.v,0));
