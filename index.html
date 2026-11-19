@@ -433,8 +433,8 @@ const D = {
     {bs:"Falgun 29", add:14249,  bal:393241, s:"p"}
   ],
   quests:[
-    {t:"Move Rs 13,000 from Sanima to NMB", d:"For the credit card"},
-    {t:"Pay the credit card Rs 18,000 in full", d:"From NMB, before the due date"},
+    {t:"Pay the credit card Rs 18,000 from Sanima", d:"Through connectIPS, in full"},
+    {t:"Send Rs 5,000 from NMB to Sanima", d:"NMB keeps 2,443 as a buffer"},
     {t:"Move Rs 2,158 from Sanima to eSewa", d:"eSewa becomes 2,343 for bills"},
     {t:"Move Rs 1,365 from Sanima to Khalti", d:"Khalti becomes 9,000 for spending"},
     {t:"Pay electricity Rs 1,843 from eSewa", d:"On Saturday, code BRIGHT2 for 2% back"},
@@ -473,7 +473,7 @@ const DAILY = {
     {id:"elec",   k:"Electricity",     v:1843,  from:"es"},
     {id:"top",    k:"Mobile top-ups",  v:500,   from:"es"},
     {id:"don",    k:"Donation 1%",     v:630,   from:"es",  cycles:[1,2,3,4,5]},
-    {id:"cc",     k:"Credit card",     v:18000, from:"nmb", cycles:[0]},
+    {id:"cc",     k:"Credit card",     v:18000, from:"san", cycles:[0]},
     {id:"claude", k:"Claude",          v:3200,  from:"nmb", cycles:[1,2,3,4,5]},
     {id:"gym",    k:"Gym",             v:8000,  from:"nmb", cycles:[1,4]},
     {id:"net",    k:"Internet",        v:4746,  from:"nmb", cycles:[1,4]}
@@ -568,7 +568,7 @@ const paidBills=c=>store.get(billsKey(c),[]);
 const billsFor=c=>DAILY.bills.filter(b=>!b.cycles||b.cycles.includes(c));
 const unpaidFrom=(c,acc)=>billsFor(c).filter(b=>b.from===acc&&!paidBills(c).includes(b.id)).reduce((a,b)=>a+b.v,0);
 const unpaidSum=c=>unpaidFrom(c,"kh");   // only bills paid from Khalti reduce the spending limit
-const SRC={kh:"Khalti",es:"eSewa",nmb:"NMB"};
+const SRC={kh:"Khalti",es:"eSewa",nmb:"NMB",san:"Sanima"};
 
 function allowance(dateStr,kh,unp){
   const c=cycleOf(dateStr), nxt=DAILY.paydays[c+1];
